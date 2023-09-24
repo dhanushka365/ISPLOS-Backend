@@ -1,5 +1,14 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Add additional prduction appsettings.json files
+//please set the correct appsettings.json file for your environment
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    //.AddJsonFile("appsettings.production.json", optional: true);
+    .AddJsonFile("appsettings.Development.json", optional: true);
+    //.AddJsonFile("appsettings.production.json", optional: true);
+
 // Add services to the container.
 
 builder.Services.AddControllers();

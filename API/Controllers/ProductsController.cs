@@ -7,6 +7,21 @@ namespace API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public ProductsController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [HttpGet("api-key")]
+        public IActionResult GetApiKey()
+        {
+            var apiKey = _configuration["MyAppSettings:ApiKey"];
+            return Ok(apiKey);
+        }
+
+
         [HttpGet]
         public string GetProducts()
         {
