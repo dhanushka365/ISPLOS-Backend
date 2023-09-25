@@ -15,7 +15,7 @@ namespace Infrastructure.Data.Config
         {
             builder.OwnsOne(i => i.ItemOrdered, io => { io.WithOwner(); });
 
-            builder.Property(i => i.Price)
+            builder.Property(i => i.CurrentPrice)
                 .HasColumnType("decimal(18,2)");
         }
     }
