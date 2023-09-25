@@ -1,4 +1,5 @@
-using API.Data;
+using Infrastructure.Data;
+using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -17,6 +18,8 @@ builder.Configuration
 
 builder.Services.AddControllers();
 builder.Services.AddMvc();
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
