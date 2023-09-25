@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class Balance
+    public class Balance:BaseEntity
     {
 
-        public Guid Id { get; set; }
 
         public double Amount { get; set; }
 

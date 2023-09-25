@@ -20,11 +20,11 @@ namespace Core.Entities
 
         public string StatusDescription { get; set; }
 
-        public string StatusTypeCode { get; set; }
+        //public string StatusTypeCode { get; set; }
 
-        public string StatusTypeMessage { get; set; }
+        //public string StatusTypeMessage { get; set; }
 
-        public string StatusTypeDescription { get; set; }
+        //public string StatusTypeDescription { get; set; }
 
 
     }
