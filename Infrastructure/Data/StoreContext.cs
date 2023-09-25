@@ -10,6 +10,9 @@ namespace Infrastructure.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Balance> Balances { get; set; }
         public DbSet<ProductBrand> ProductBands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -31,5 +34,6 @@ namespace Infrastructure.Data
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
         }
+
     }
 }

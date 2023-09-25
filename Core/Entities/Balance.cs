@@ -8,6 +8,14 @@ namespace Core.Entities
 {
     public class Balance
     {
-        public double BalanceAmount { get; set; }
+
+        public Guid Id { get; set; }
+
+        public double Amount { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public User User { get; set; }
+
     }
 }
