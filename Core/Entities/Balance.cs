@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public class ProductItemOrdered:BaseEntity
+    public class Balance
     {
-        
-        
-        public string ProductName { get; set; }
-        public string PictureUrl { get; set; }
+        public double BalanceAmount { get; set; }
     }
 }

@@ -13,5 +13,23 @@ namespace Infrastructure.Data
         public DbSet<ProductBrand> ProductBands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Subtotal)
+                .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.Price)
+                .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
+
+        }
     }
 }

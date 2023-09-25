@@ -10,7 +10,7 @@ namespace Core.Entities
     {
         public int Id { get; set; }
         public ProductItemOrdered ItemOrdered { get; set; }
-        public decimal Price { get; set; }
+        public decimal CurrentPrice { get; set; }
         public int Quantity { get; set; }
     }
 }
