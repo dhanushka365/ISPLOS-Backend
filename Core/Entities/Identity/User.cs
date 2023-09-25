@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities.Identity
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<int>
     {
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
