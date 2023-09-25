@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Data.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
     partial class StoreContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,28 @@ namespace Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Entities.Address", b =>
+            modelBuilder.Entity("Core.Entities.Balance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Balances");
+                });
+
+            modelBuilder.Entity("Core.Entities.Identity.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,15 +66,21 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Zipcode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Core.Entities.Balance", b =>
+            modelBuilder.Entity("Core.Entities.Identity.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,20 +88,94 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Balances");
+                    b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Core.Entities.DeliveryMethod", b =>
+            modelBuilder.Entity("Core.Entities.Identity.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("RoleId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId1");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Core.Entities.OrderAggregate.DeliveryMethod", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,7 +190,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("ShortName")
                         .HasColumnType("nvarchar(max)");
@@ -99,7 +200,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("DeliveryMethod");
                 });
 
-            modelBuilder.Entity("Core.Entities.Order", b =>
+            modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,7 +240,7 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Core.Entities.OrderItem", b =>
+            modelBuilder.Entity("Core.Entities.OrderAggregate.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,9 +251,6 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ItemOrderedId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
@@ -161,14 +259,12 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemOrderedId");
-
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItem");
                 });
 
-            modelBuilder.Entity("Core.Entities.OrderStatus", b =>
+            modelBuilder.Entity("Core.Entities.OrderAggregate.OrderStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,25 +396,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("ProductBands");
                 });
 
-            modelBuilder.Entity("Core.Entities.ProductItemOrdered", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductItemOrdered");
-                });
-
             modelBuilder.Entity("Core.Entities.ProductType", b =>
                 {
                     b.Property<int>("Id")
@@ -335,95 +412,9 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("ProductTypes");
                 });
 
-            modelBuilder.Entity("Core.Entities.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Avatar")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("Core.Entities.Balance", b =>
                 {
-                    b.HasOne("Core.Entities.User", "User")
+                    b.HasOne("Core.Entities.Identity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -432,17 +423,37 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Entities.Order", b =>
+            modelBuilder.Entity("Core.Entities.Identity.Address", b =>
                 {
-                    b.HasOne("Core.Entities.DeliveryMethod", "DeliveryMethod")
+                    b.HasOne("Core.Entities.Identity.User", "User")
+                        .WithOne("Address")
+                        .HasForeignKey("Core.Entities.Identity.Address", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.Identity.User", b =>
+                {
+                    b.HasOne("Core.Entities.Identity.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId1");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
+                {
+                    b.HasOne("Core.Entities.OrderAggregate.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId");
 
-                    b.HasOne("Core.Entities.Address", "ShipToAddress")
+                    b.HasOne("Core.Entities.Identity.Address", "ShipToAddress")
                         .WithMany()
                         .HasForeignKey("ShipToAddressId");
 
-                    b.HasOne("Core.Entities.OrderStatus", "Status")
+                    b.HasOne("Core.Entities.OrderAggregate.OrderStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 
@@ -453,22 +464,40 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("Core.Entities.OrderItem", b =>
+            modelBuilder.Entity("Core.Entities.OrderAggregate.OrderItem", b =>
                 {
-                    b.HasOne("Core.Entities.ProductItemOrdered", "ItemOrdered")
-                        .WithMany()
-                        .HasForeignKey("ItemOrderedId");
-
-                    b.HasOne("Core.Entities.Order", null)
+                    b.HasOne("Core.Entities.OrderAggregate.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
+
+                    b.OwnsOne("Core.Entities.OrderAggregate.ProductItemOrdered", "ItemOrdered", b1 =>
+                        {
+                            b1.Property<int>("OrderItemId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("PictureUrl")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<int>("ProductItemId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("ProductName")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("OrderItemId");
+
+                            b1.ToTable("OrderItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderItemId");
+                        });
 
                     b.Navigation("ItemOrdered");
                 });
 
             modelBuilder.Entity("Core.Entities.Payment", b =>
                 {
-                    b.HasOne("Core.Entities.Order", "Order")
+                    b.HasOne("Core.Entities.OrderAggregate.Order", "Order")
                         .WithMany("Payments")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -496,18 +525,12 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("ProductType");
                 });
 
-            modelBuilder.Entity("Core.Entities.User", b =>
+            modelBuilder.Entity("Core.Entities.Identity.User", b =>
                 {
-                    b.HasOne("Core.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
+                    b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Core.Entities.Order", b =>
+            modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderItems");
 

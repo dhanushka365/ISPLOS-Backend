@@ -11,6 +11,9 @@ namespace Core.Entities.Identity
     public class User : IdentityUser<int>
     {
         [Required(ErrorMessage = "Name is required")]
+
+        public int UserId { get; set; }
+
         public string Name { get; set; }
 
         public string Avatar { get; set; }
