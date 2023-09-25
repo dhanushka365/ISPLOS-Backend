@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities
+namespace Core.Entities.Identity
 {
     public class User : IdentityUser<Guid>
     {
-        [Required(ErrorMessage ="Name is required")]
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
 
         public string Avatar { get; set; }
@@ -18,6 +18,8 @@ namespace Core.Entities
         public Guid RoleId { get; set; }
 
         public Role Role { get; set; }
+
+        public Address Address { get; set; }
 
     }
 }

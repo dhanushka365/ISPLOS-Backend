@@ -1,5 +1,8 @@
 ﻿using Core.Entities;
+using Core.Entities.Identity;
+using Core.Entities.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Infrastructure.Data
 {
@@ -20,6 +23,8 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.Subtotal)

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities
+namespace Core.Entities.Identity
 {
-    public class Role: IdentityRole<Guid>
+    public class Role : IdentityRole<Guid>
     {
         [Required]
         public override Guid Id { get; set; }
