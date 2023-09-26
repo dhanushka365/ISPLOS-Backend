@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace API.Controllers
 {
@@ -72,21 +73,40 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
-         
-            await _productsRepo.DeleteByIdAsync(product => product.Id == id);
+             var Product =  await _productsRepo.GetByIdAsync(product => product.Id == id);
+
+            if (Product == null)
+            {
+                NotFound();
+            }
+
+            _productsRepo.Delete(Product);
+            await _productsRepo.SaveAsync();
+           //wait _productsRepo.DeleteByIdAsync(product => product.Id == id);
             return NoContent();
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(Guid id, Product product)
         {
-            if (id != product.Id)
+            var ProductDomain = await _productsRepo.GetByIdAsync(product => product.Id == id);
+
+            if (ProductDomain == null)
             {
-                return BadRequest();
+                NotFound();
             }
 
-            await _productsRepo.UpdateByAsync(product => product.Id == id);
-            return NoContent();
+            ProductDomain.Name = product.Name;
+            ProductDomain.Description = product.Description;
+            ProductDomain.Price = product.Price;
+            ProductDomain.PictureUrl = product.PictureUrl;
+            ProductDomain.ProductBrandId = product.ProductBrandId;
+            ProductDomain.ProductTypeId = product.ProductTypeId;
+
+
+           await _productsRepo.SaveAsync();
+
+           return NoContent();
         }
 
         [HttpPost]
