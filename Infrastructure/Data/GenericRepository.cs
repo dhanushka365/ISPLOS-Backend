@@ -63,5 +63,10 @@ namespace Infrastructure.Data
         {
             throw new NotImplementedException();
         }
+
+        public async Task AddAsync(T entity)
+        {
+            await _context.AddAsync(entity);
+        }
     }
 }
