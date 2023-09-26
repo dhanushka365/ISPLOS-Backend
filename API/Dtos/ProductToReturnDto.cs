@@ -1,9 +1,8 @@
-﻿using Core.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace API.Dtos
 {
-    public class ProductDto
+    public class ProductToReturnDto
     {
         [Required]
         public Guid Id { get; set; }
@@ -26,5 +25,9 @@ namespace API.Dtos
         [Required]
         public Guid ProductBrandId { get; set; }
 
+        [Required]
+        public string ProductTypeName { get; set; } // Add this property
+        [Required]
+        public string ProductBrandName { get; set; } // Add this property
     }
 }

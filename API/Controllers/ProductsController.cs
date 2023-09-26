@@ -41,7 +41,7 @@ namespace API.Controllers
             return Ok(apiKey);
         }
 
-
+    //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
@@ -52,7 +52,7 @@ namespace API.Controllers
             var products = await queryableProducts
                 .Include(p => p.ProductType)
                 .Include(p => p.ProductBrand)
-                .Select(p => new ProductDto
+                .Select(p => new ProductToReturnDto
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -70,22 +70,38 @@ namespace API.Controllers
 
         }
 
+     //-------------------------------------------------------------------------------------------------------------------------------
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
 
-            //return Ok(await _productsRepo.GetByIdAsync(product => product.Id == id));
-            var product = await _productsRepo.GetByIdAsync(product => product.Id == id);
+            var product = await _productsRepo
+                .GetAllQueryable()
+                .Include(p => p.ProductType)
+                .Include(p => p.ProductBrand)
+                .FirstOrDefaultAsync(product => product.Id == id);
 
             if (product == null)
             {
-                return Content("Product not found");
+                return NotFound(); // Return a 404 Not Found response
             }
 
-            var productJson = JsonConvert.SerializeObject(product);
+            // Check if ProductType and ProductBrand are not null before accessing their properties
+            var productToReturn = new ProductToReturnDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                PictureUrl = product.PictureUrl,
+                ProductTypeId = product.ProductTypeId ,
+                ProductBrandId = product.ProductBrandId,
+                ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
+                ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
+            };
 
-            return Content(productJson, "application/json");
+            return Ok(productToReturn); // Return the ProductToReturnDto as a JSON response
         }
 
 
@@ -93,16 +109,7 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
 
-            var brands = await _productsRepo.ListAllAsync();
-            //return Ok(await _productBrandRepo.ListAllAsync());
-            if (brands == null)
-            {
-                return Content("Brand not found");
-            }
-
-            var productJson = JsonConvert.SerializeObject(brands);
-
-            return Content(productJson, "application/json");
+            return Ok(await _productBrandRepo.ListAllAsync());
         }
 
         [HttpGet("types")]
