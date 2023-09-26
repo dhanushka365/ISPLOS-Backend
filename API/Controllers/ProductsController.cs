@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +18,7 @@ namespace API.Controllers
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
 
         public ProductsController(IConfiguration configuration , IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductType> productTypeRepo,IGenericRepository<ProductBrand> productBrandRepo)
+            IGenericRepository<ProductType> productTypeRepo,IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper)
         {
             _configuration = configuration;
             _productsRepo = productsRepo;
@@ -91,6 +92,8 @@ namespace API.Controllers
             
             await _productsRepo.AddAsync(product);
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+
+            
         }
 
 
