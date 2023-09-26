@@ -88,7 +88,7 @@ namespace API.Controllers
 
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{ProductBrandid}")]
         public async Task<ActionResult> DeleteProductBrand(Guid id)
         {
             var ProductBrand = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
@@ -104,7 +104,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{ProductBrandid}")]
         public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrand productBrand)
         {
             var ProductBrandDomain = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
