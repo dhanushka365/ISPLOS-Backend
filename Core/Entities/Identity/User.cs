@@ -22,7 +22,6 @@ namespace Core.Entities.Identity
 
         public Role Role { get; set; }
 
-        public Address Address { get; set; }
 
     }
 }

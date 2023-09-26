@@ -25,13 +25,7 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
       
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Address)               // User has one Address
-                .WithOne(a => a.User)                // Address has one User
-                .HasForeignKey<Address>(a => a.UserId);  // Address.UserId is the foreign key
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.Subtotal)
