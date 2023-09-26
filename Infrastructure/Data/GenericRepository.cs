@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
-using Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,11 +22,6 @@ namespace Infrastructure.Data
             _context.Set<T>().Add(entity);
         }
 
-        //public async Task<int> CountAsync(ISpecification<T> spec)
-        //{
-        //    return await ApplySpecification(spec).CountAsync();
-        //}
-
         public void Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
@@ -45,26 +39,18 @@ namespace Infrastructure.Data
             if (entityToDelete != null)
             {
                 _context.Remove(entityToDelete);
-               // await _context.SaveChangesAsync();
+            
             }
 
         }
-
-
-        //public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
-        //{
-        //    return await ApplySpecification(spec).FirstOrDefaultAsync();
-        //}
+   
 
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        //public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
-        //{
-        //    return await ApplySpecification(spec).ToListAsync();
-        //}
+  
 
         public void Update(T entity)
         {
@@ -72,9 +58,9 @@ namespace Infrastructure.Data
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-      //private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-      //  {
-      //      return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
-      //  }
+        public Task UpdateByAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
