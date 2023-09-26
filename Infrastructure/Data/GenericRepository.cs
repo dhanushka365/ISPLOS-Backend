@@ -29,25 +29,6 @@ namespace Infrastructure.Data
         }
 
 
-        //public async Task<T> GetByIdAsync(int id)
-        //{
-        //    return await _context.Set<T>().FindAsync(id);
-        //}
-
-
-        public async Task DeleteByIdAsync(Expression<Func<T, bool>> predicate)
-        {
-            var entityToDelete = await _context.FindAsync<T>(predicate);
-
-            if (entityToDelete != null)
-            {
-                _context.Remove(entityToDelete);
-            
-            }
-
-        }
-   
-
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
@@ -77,10 +58,12 @@ namespace Infrastructure.Data
             return await _context.Set<T>().Where(predicate).ToListAsync();
         }
 
-        //private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-        //  {
-        //      return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
-        //  }
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+      
 
     }
 }
