@@ -50,7 +50,8 @@ var logger = services.GetRequiredService<ILogger<Program>>();
 try
 {
     await context.Database.MigrateAsync();
-    
+    await DbSeederContext.SeedAsync(context);
+
 }
 catch (Exception ex)
 {
