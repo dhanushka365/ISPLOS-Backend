@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using API.Dtos;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Net.WebSockets;
 
 namespace API.Controllers
@@ -51,15 +53,34 @@ namespace API.Controllers
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
            
-            return Ok(await _productsRepo.GetByIdAsync(product => product.Id == id));
+            //return Ok(await _productsRepo.GetByIdAsync(product => product.Id == id));
+            var product = await _productsRepo.GetByIdAsync(product => product.Id == id);
+
+            if (product == null)
+            {
+                return Content("Product not found"); 
+            }
+
+            var productJson = JsonConvert.SerializeObject(product); 
+
+            return Content(productJson, "application/json"); 
         }
 
 
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            
-            return Ok(await _productBrandRepo.ListAllAsync());
+
+            var brands = await _productsRepo.ListAllAsync();
+            //return Ok(await _productBrandRepo.ListAllAsync());
+            if (brands == null)
+            {
+                return Content("Brand not found");
+            }
+
+            var productJson = JsonConvert.SerializeObject(brands);
+
+            return Content(productJson, "application/json");
         }
 
         [HttpGet("types")]
@@ -67,6 +88,7 @@ namespace API.Controllers
         {
            
             return Ok(await _productTypeRepo.ListAllAsync());
+
 
         }
 
@@ -152,6 +174,31 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
 
             
+        }
+
+        [HttpPost("brand")]
+        public async Task<ActionResult<ProductBrand>> AddProductBrand([FromBody] ProductBrandDto productBrandDto)
+        {
+
+            //await _productBrandRepo.AddAsync(productBrandDto);
+            //return CreatedAtAction(nameof(GetProductBrands), new { id = productBrand.Id }, productBrand);
+
+         
+            var productDomainModel = _mapper.Map<ProductBrand>(productBrandDto);
+            
+            //use Domain model to create difficulty 
+            await _productBrandRepo.AddAsync(productDomainModel);
+
+            //Map domain model into DTO
+            return Ok(_mapper.Map<ProductBrand>(productBrandDto));
+        }
+
+        [HttpPost("type")]
+        public async Task<ActionResult<ProductType>> AddProductType(ProductType productType)
+        {
+
+            await _productTypeRepo.AddAsync(productType);
+            return CreatedAtAction(nameof(GetProductTypes), new { id = productType.Id }, productType);
         }
 
 
