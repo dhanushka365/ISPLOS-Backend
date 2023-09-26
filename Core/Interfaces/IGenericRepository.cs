@@ -18,6 +18,8 @@ namespace Core.Interfaces
 
         Task<IReadOnlyList<T>> ListAllAsync();
 
+        IQueryable<T> GetAllQueryable();
+
         Task AddAsync(T entity);
 
         Task SaveAsync();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-    public interface IPaymentService
+    public interface IPaymentRepository
     {
         Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId);
         Task<Order> UpdateOrderPaymentSucceeded(string paymentIntentId);

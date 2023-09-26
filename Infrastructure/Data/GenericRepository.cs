@@ -28,6 +28,10 @@ namespace Infrastructure.Data
             _context.Set<T>().Remove(entity);
         }
 
+        public IQueryable<T> GetAllQueryable()
+        {
+            return _context.Set<T>();
+        }
 
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {

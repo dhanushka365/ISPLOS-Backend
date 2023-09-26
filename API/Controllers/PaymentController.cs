@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,5 +8,13 @@ namespace API.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
+       
+        private readonly IMapper mapper;
+
+        public PaymentController( IMapper mapper)
+        {
+            
+            this.mapper = mapper;
+        }
     }
 }

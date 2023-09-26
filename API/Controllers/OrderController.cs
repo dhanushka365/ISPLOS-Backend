@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,5 +8,14 @@ namespace API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IMapper mapper;
+
+        public OrderController( IMapper mapper)
+        {
+            
+            this.mapper = mapper;
+        }
+
+    
     }
 }
