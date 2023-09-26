@@ -43,43 +43,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Balances");
                 });
 
-            modelBuilder.Entity("Core.Entities.Identity.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Zipcode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Address");
-                });
-
             modelBuilder.Entity("Core.Entities.Identity.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -220,9 +183,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ShipToAddressId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
@@ -232,8 +192,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryMethodId");
-
-                    b.HasIndex("ShipToAddressId");
 
                     b.HasIndex("StatusId");
 
@@ -423,17 +381,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Entities.Identity.Address", b =>
-                {
-                    b.HasOne("Core.Entities.Identity.User", "User")
-                        .WithOne("Address")
-                        .HasForeignKey("Core.Entities.Identity.Address", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Core.Entities.Identity.User", b =>
                 {
                     b.HasOne("Core.Entities.Identity.Role", "Role")
@@ -449,17 +396,11 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId");
 
-                    b.HasOne("Core.Entities.Identity.Address", "ShipToAddress")
-                        .WithMany()
-                        .HasForeignKey("ShipToAddressId");
-
                     b.HasOne("Core.Entities.OrderAggregate.OrderStatus", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
 
                     b.Navigation("DeliveryMethod");
-
-                    b.Navigation("ShipToAddress");
 
                     b.Navigation("Status");
                 });
@@ -523,11 +464,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductBrand");
 
                     b.Navigation("ProductType");
-                });
-
-            modelBuilder.Entity("Core.Entities.Identity.User", b =>
-                {
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
