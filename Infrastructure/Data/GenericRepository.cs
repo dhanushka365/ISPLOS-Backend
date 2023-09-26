@@ -50,6 +50,7 @@ namespace Infrastructure.Data
 
         }
 
+
         public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();

@@ -37,6 +37,7 @@ namespace Infrastructure.Data
                 .Include(p => p.ProductType)//this is called eager loading
                 .Include(p => p.ProductBrand)//this is called eager loading
                 .ToListAsync();//this is called lazy loading
+
         }
 
         public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync()
@@ -44,6 +45,5 @@ namespace Infrastructure.Data
             return await _context.ProductTypes.ToListAsync();
         }
 
-       
     }
 }
