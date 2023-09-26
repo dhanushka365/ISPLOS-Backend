@@ -45,7 +45,7 @@ namespace Infrastructure.Data
             if (entityToDelete != null)
             {
                 _context.Remove(entityToDelete);
-                await _context.SaveChangesAsync();
+               // await _context.SaveChangesAsync();
             }
 
         }
