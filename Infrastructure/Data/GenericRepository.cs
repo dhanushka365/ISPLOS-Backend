@@ -38,6 +38,19 @@ namespace Infrastructure.Data
             return await _context.Set<T>().FindAsync(id);
         }
 
+        public async Task DeleteByIdAsync(int id)
+        {
+            var entityToDelete = await _context.FindAsync<T>(id);
+
+            if (entityToDelete != null)
+            {
+                _context.Remove(entityToDelete);
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
+
         public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).FirstOrDefaultAsync();

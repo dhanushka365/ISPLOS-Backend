@@ -37,10 +37,6 @@ namespace Infrastructure.Data
                 .Property(o => o.Subtotal)
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
-            modelBuilder.Entity<OrderItem>()
-                .Property(oi => oi.Price)
-                .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
-
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
