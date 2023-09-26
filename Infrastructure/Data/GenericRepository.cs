@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
-using Core.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
         public GenericRepository(StoreContext context)
@@ -21,11 +20,6 @@ namespace Infrastructure.Data
         public void Add(T entity)
         {
             _context.Set<T>().Add(entity);
-        }
-
-        public async Task<int> CountAsync(ISpecification<T> spec)
-        {
-            return await ApplySpecification(spec).CountAsync();
         }
 
         public void Delete(T entity)
@@ -50,21 +44,11 @@ namespace Infrastructure.Data
 
         }
 
-
-        public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
-        {
-            return await ApplySpecification(spec).FirstOrDefaultAsync();
-        }
-
         public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
-        {
-            return await ApplySpecification(spec).ToListAsync();
-        }
 
         public void Update(T entity)
         {
@@ -72,9 +56,10 @@ namespace Infrastructure.Data
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        public async Task UpdateByAsync(T entity)
         {
-            return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

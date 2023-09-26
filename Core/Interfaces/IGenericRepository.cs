@@ -14,10 +14,15 @@ namespace Core.Interfaces
         Task<IReadOnlyList<T>> ListAllAsync();
 
         Task DeleteByIdAsync(int id);
-     
-        
+
+        Task UpdateByAsync(int id);
+
         //Task<T> GetEntityWithSpec(ISpecification<T> spec);
         //Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+        //Task<int> CountAsync(ISpecification<T> spec);
+        //Task<int> CountAsync(ISpecification<T> spec);
+        //Task<int> CountAsync(ISpecification<T> spec);
+        //Task<int> CountAsync(ISpecification<T> spec);
         //Task<int> CountAsync(ISpecification<T> spec);
         void Add(T entity);
         void Update(T entity);
