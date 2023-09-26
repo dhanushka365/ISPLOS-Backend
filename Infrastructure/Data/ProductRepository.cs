@@ -43,5 +43,7 @@ namespace Infrastructure.Data
         {
             return await _context.ProductTypes.ToListAsync();
         }
+
+       
     }
 }
