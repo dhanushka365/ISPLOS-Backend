@@ -1,26 +1,32 @@
 ﻿[
   {
     "Id": 1,
-    "Name": "Angular"
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
   },
   {
     "Id": 2,
-    "Name": "NetCore"
+    "Name": "Burger Chains",
+    "Description": "Examples: McDonald's, Burger King, Wendy's, In-N-Out Burger"
   },
   {
     "Id": 3,
-    "Name": "VS Code"
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
   },
   {
     "Id": 4,
-    "Name": "React"
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
   },
   {
     "Id": 5,
-    "Name": "Typescript"
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
   },
   {
     "Id": 6,
-    "Name": "Redis"
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
   }
 ]
