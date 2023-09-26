@@ -27,6 +27,7 @@ builder.Services.AddControllers();
 builder.Services.AddMvc();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 //Add Generic Repository as service
 builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
