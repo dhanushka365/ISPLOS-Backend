@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Core.Entities.Identity
 {
-    public class Role : IdentityRole<int>
+    public class Role : IdentityRole<Guid>
     {
         [Required]
-        public override int Id { get; set; }
+        public override Guid Id { get; set; }
 
         [Required]
         public override string Name { get; set; }
