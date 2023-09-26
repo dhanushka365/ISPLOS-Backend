@@ -12,7 +12,8 @@ namespace API.Mappers
         {
             CreateMap<Role,RoleDTO>().ReverseMap();
             CreateMap<Role,RequestRoleDTO>().ReverseMap();
-                
+            CreateMap<Product, ProductDto>().ReverseMap();
+
         }
     }
 }

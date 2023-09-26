@@ -20,7 +20,6 @@ namespace API.Controllers
             IGenericRepository<ProductType> productTypeRepo,IGenericRepository<ProductBrand> productBrandRepo)
         {
             _configuration = configuration;
-        
             _productsRepo = productsRepo;
             _productTypeRepo = productTypeRepo;
             _productBrandRepo = productBrandRepo;
@@ -73,6 +72,28 @@ namespace API.Controllers
             await _productsRepo.DeleteByIdAsync(product => product.Id == id);
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProduct(Guid id, Product product)
+        {
+            if (id != product.Id)
+            {
+                return BadRequest();
+            }
+
+            await _productsRepo.UpdateByAsync(product => product.Id == id);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> AddProduct(Product product)
+        {
+            
+            await _productsRepo.AddAsync(product);
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        }
+
+
 
     }
 }
