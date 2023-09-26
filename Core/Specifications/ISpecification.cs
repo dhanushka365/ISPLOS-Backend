@@ -9,12 +9,12 @@ namespace Core.Specifications
 {
     public interface ISpecification<T>
     {
-        Expression<Func<T, bool>> Criteria { get; }
-        List<Expression<Func<T, object>>> Includes { get; }
-        Expression<Func<T, object>> OrderBy { get; }
-        Expression<Func<T, object>> OrderByDescending { get; }
-        int Take { get; }
-        int Skip { get; }
-        bool IsPagingEnabled { get; }
+        Expression<Func<T, bool>> Criteria { get; }//this is the where clause
+        List<Expression<Func<T, object>>> Includes { get; }//this is the include clause
+        Expression<Func<T, object>> OrderBy { get; }//this is the order by clause
+        Expression<Func<T, object>> OrderByDescending { get; }//this is the order by descending clause
+        int Take { get; }//this is the take clause
+        int Skip { get; }//this is the skip clause
+        bool IsPagingEnabled { get; }//this is the paging clause
     }
 }
