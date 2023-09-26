@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,14 +28,14 @@ namespace Infrastructure.Data
             _context.Set<T>().Remove(entity);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FindAsync(predicate);
         }
 
-        public async Task DeleteByIdAsync(int id)
+        public async Task DeleteByIdAsync(Expression<Func<T, bool>> predicate)
         {
-            var entityToDelete = await _context.FindAsync<T>(id);
+            var entityToDelete = await _context.FindAsync<T>(predicate);
 
             if (entityToDelete != null)
             {
@@ -58,7 +59,7 @@ namespace Infrastructure.Data
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        public Task UpdateByAsync(int id)
+        public Task UpdateByAsync(Expression<Func<T, bool>> predicate)
         {
             throw new NotImplementedException();
         }
