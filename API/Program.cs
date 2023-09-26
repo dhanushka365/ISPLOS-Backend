@@ -21,6 +21,9 @@ builder.Services.AddMvc();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+//Add Generic Repository as service
+builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
 builder.Services.AddDbContext<StoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
