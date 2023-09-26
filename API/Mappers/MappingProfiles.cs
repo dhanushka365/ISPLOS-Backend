@@ -2,6 +2,7 @@
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Core.Entities;
+using Core.Entities.Identity;
 
 namespace API.Mappers
 {
@@ -9,7 +10,8 @@ namespace API.Mappers
     {
         public MappingProfiles()
         {
-            
+            CreateMap<Role,RoleDTO>().ReverseMap();
+            CreateMap<Role,RequestRoleDTO>().ReverseMap();
                 
         }
     }

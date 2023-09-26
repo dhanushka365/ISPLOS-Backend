@@ -15,7 +15,7 @@ namespace Core.Entities
         public double Amount { get; set; }
 
         [ForeignKey("UserId")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public User User { get; set; }
 
