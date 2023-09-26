@@ -45,8 +45,27 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
+            // Get the IQueryable<Product> from your repository, but don't execute it yet.
+            var queryableProducts = _productsRepo.GetAllQueryable();
 
-            var products = await _productsRepo.ListAllAsync();
+            // Include the related product type and brand information in the query.
+            var products = await queryableProducts
+                .Include(p => p.ProductType)
+                .Include(p => p.ProductBrand)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Description = p.Description,
+                    PictureUrl = p.PictureUrl,
+                    ProductBrandId=p.ProductBrandId,
+                    ProductTypeId=p.ProductTypeId,
+                    ProductTypeName = p.ProductType.Name,
+                    ProductBrandName = p.ProductBrand.Name
+                })
+                .ToListAsync();
+
             return Ok(products);
 
         }
@@ -95,21 +114,7 @@ namespace API.Controllers
 
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteProduct(Guid id)
-        {
-            var Product = await _productsRepo.GetByIdAsync(product => product.Id == id);
-
-            if (Product == null)
-            {
-                NotFound();
-            }
-
-            _productsRepo.Delete(Product);
-            await _productsRepo.SaveAsync();
-            //wait _productsRepo.DeleteByIdAsync(product => product.Id == id);
-            return NoContent();
-        }
+     
 
         [HttpPut("{ProductBrandid}")]
         public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrand productBrand)
@@ -151,16 +156,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Product>> AddProduct(Product product)
-        {
-
-            await _productsRepo.AddAsync(product);
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
-
-
-        }
-
+       
 
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -220,6 +216,31 @@ namespace API.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AddProduct([FromBody] RequestProductDto requestproductdto)
+        {
+            try
+            {
+                var ProductDomain = _mapper.Map<Product>(requestproductdto);
+                var ProductID = Guid.NewGuid();
+                ProductDomain.Id = ProductID;
+                if (ProductDomain == null)
+                {
+                    NotFound();
+                }
+                await _productsRepo.AddAsync(ProductDomain);
+                await _productsRepo.SaveAsync();
+                var savedProductDto = _mapper.Map<ProductDto>(ProductDomain);
+                _logger.LogInformation("Product added and saved successfully.");
+                return CreatedAtAction(nameof(GetProduct), new { id = ProductDomain.Id }, savedProductDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while adding and saving the product.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
      //---------------------------------------------------------------------------------------------------------------------------------------------------
 
         [HttpDelete("brand/{id}")]
@@ -266,6 +287,30 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting the product type.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProduct(Guid id)
+        {
+            try
+            {
+                var Product = await _productsRepo.GetByIdAsync(product => product.Id == id);
+
+                if (Product == null)
+                {
+                    NotFound();
+                }
+
+                _productsRepo.Delete(Product);
+                await _productsRepo.SaveAsync();
+                _logger.LogInformation("Product deleted successfully.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting the product.");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
