@@ -12,7 +12,6 @@ namespace Core.Interfaces
     {
         Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate);
 
-
         Task<T> FilterObject(Expression<Func<T, bool>> predicate);
 
         Task<List<T>> FilterList(Expression<Func<T, bool>> predicate);
@@ -21,11 +20,12 @@ namespace Core.Interfaces
 
         Task DeleteByIdAsync(int id);
 
-
         //Task<T> GetEntityWithSpec(ISpecification<T> spec);
         //Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
         //Task<int> CountAsync(ISpecification<T> spec);
+      
         Task AddAsync(T entity);
+      
         void Update(T entity);
         void Delete(T entity);
     }
