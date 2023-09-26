@@ -18,9 +18,9 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+           await _context.Set<T>().AddAsync(entity);
         }
 
         public void Delete(T entity)
@@ -28,10 +28,12 @@ namespace Infrastructure.Data
             _context.Set<T>().Remove(entity);
         }
 
-        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _context.Set<T>().FindAsync(predicate);
-        }
+
+        //public async Task<T> GetByIdAsync(int id)
+        //{
+        //    return await _context.Set<T>().FindAsync(id);
+        //}
+
 
         public async Task DeleteByIdAsync(Expression<Func<T, bool>> predicate)
         {
@@ -59,14 +61,26 @@ namespace Infrastructure.Data
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        public Task UpdateByAsync(Expression<Func<T, bool>> predicate)
+
+        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+           return  await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        public async Task AddAsync(T entity)
+        public  Task<T> FilterObject(Expression<Func<T, bool>> predicate)
         {
-            await _context.AddAsync(entity);
+            return _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
         }
+
+        public async Task<List<T>> FilterList(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
+
+        //private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        //  {
+        //      return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        //  }
+
     }
 }

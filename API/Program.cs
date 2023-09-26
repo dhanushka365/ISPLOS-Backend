@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using API.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,9 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericReposito
 builder.Services.AddDbContext<StoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+//configure the AutoMapper
+
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 //Identity Configurations 
 
@@ -42,6 +46,8 @@ builder.Services.AddIdentityCore<User>().AddRoles<Role>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>("ICP")
     .AddEntityFrameworkStores<StoreContext>()
     .AddDefaultTokenProviders();
+
+
 
 // Identity Password Configuration
 
@@ -70,6 +76,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         }
     );
 
+
+ 
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

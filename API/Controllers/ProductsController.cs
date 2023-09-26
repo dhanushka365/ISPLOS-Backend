@@ -45,6 +45,7 @@ namespace API.Controllers
             
         }
 
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
