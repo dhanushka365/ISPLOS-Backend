@@ -86,6 +86,41 @@ namespace API.Controllers
             return NoContent();
         }
 
+
+
+        [HttpDelete("{ProductBrandid}")]
+        public async Task<ActionResult> DeleteProductBrand(Guid id)
+        {
+            var ProductBrand = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
+
+            if (ProductBrand == null)
+            {
+                NotFound();
+            }
+
+            _productBrandRepo.Delete(ProductBrand);
+            await _productBrandRepo.SaveAsync();
+            //wait _productsRepo.DeleteByIdAsync(product => product.Id == id);
+            return NoContent();
+        }
+
+        [HttpPut("{ProductBrandid}")]
+        public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrand productBrand)
+        {
+            var ProductBrandDomain = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
+
+            if (ProductBrandDomain == null)
+            {
+                NotFound();
+            }
+
+            ProductBrandDomain.Name = productBrand.Name;
+
+            await _productBrandRepo.SaveAsync();
+
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(Guid id, Product product)
         {
