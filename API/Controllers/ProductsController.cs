@@ -16,6 +16,7 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+        private readonly IMapper _mapper;
 
         public ProductsController(IConfiguration configuration , IGenericRepository<Product> productsRepo,
             IGenericRepository<ProductType> productTypeRepo,IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper)
@@ -24,6 +25,7 @@ namespace API.Controllers
             _productsRepo = productsRepo;
             _productTypeRepo = productTypeRepo;
             _productBrandRepo = productBrandRepo;
+            _mapper = mapper;
         }
 
         [HttpGet("api-key")]
