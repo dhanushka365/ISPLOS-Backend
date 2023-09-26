@@ -13,8 +13,10 @@ namespace API.Mappers
             CreateMap<Role,RoleDTO>().ReverseMap();
             CreateMap<Role,RequestRoleDTO>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<ProductBrand,ProductBrandDto>().ReverseMap();
-
+            CreateMap<ProductBrand,RequestProductBrandDto>().ReverseMap();
+            CreateMap<ProductBrand, ProductBrandDto>().ReverseMap();
+            CreateMap<ProductType, RequestProductTypeDto>().ReverseMap();
+            CreateMap<ProductType, ProductTypeDto>().ReverseMap();
         }
     }
 }

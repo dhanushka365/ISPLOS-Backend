@@ -2,15 +2,12 @@
 
 namespace API.Dtos
 {
-    public class ProductBrandDto
+    public class ProductTypeDto
     {
         [Required]
         public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }
-
-        [Required]
-        public string Description { get; set; }
     }
 }

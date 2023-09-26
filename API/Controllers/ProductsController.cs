@@ -1,6 +1,7 @@
 ﻿using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.Entities.Identity;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
@@ -20,14 +21,16 @@ namespace API.Controllers
         private readonly IGenericRepository<ProductType> _productTypeRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IConfiguration configuration , IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductType> productTypeRepo,IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper)
+        public ProductsController(IConfiguration configuration, IGenericRepository<Product> productsRepo,
+            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger)
         {
             _configuration = configuration;
             _productsRepo = productsRepo;
             _productTypeRepo = productTypeRepo;
             _productBrandRepo = productBrandRepo;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -42,28 +45,28 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-         
+
             var products = await _productsRepo.ListAllAsync();
             return Ok(products);
-            
+
         }
 
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
-           
+
             //return Ok(await _productsRepo.GetByIdAsync(product => product.Id == id));
             var product = await _productsRepo.GetByIdAsync(product => product.Id == id);
 
             if (product == null)
             {
-                return Content("Product not found"); 
+                return Content("Product not found");
             }
 
-            var productJson = JsonConvert.SerializeObject(product); 
+            var productJson = JsonConvert.SerializeObject(product);
 
-            return Content(productJson, "application/json"); 
+            return Content(productJson, "application/json");
         }
 
 
@@ -86,7 +89,7 @@ namespace API.Controllers
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
-           
+
             return Ok(await _productTypeRepo.ListAllAsync());
 
 
@@ -95,7 +98,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
-             var Product =  await _productsRepo.GetByIdAsync(product => product.Id == id);
+            var Product = await _productsRepo.GetByIdAsync(product => product.Id == id);
 
             if (Product == null)
             {
@@ -104,24 +107,6 @@ namespace API.Controllers
 
             _productsRepo.Delete(Product);
             await _productsRepo.SaveAsync();
-           //wait _productsRepo.DeleteByIdAsync(product => product.Id == id);
-            return NoContent();
-        }
-
-
-
-        [HttpDelete("{ProductBrandid}")]
-        public async Task<ActionResult> DeleteProductBrand(Guid id)
-        {
-            var ProductBrand = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
-
-            if (ProductBrand == null)
-            {
-                NotFound();
-            }
-
-            _productBrandRepo.Delete(ProductBrand);
-            await _productBrandRepo.SaveAsync();
             //wait _productsRepo.DeleteByIdAsync(product => product.Id == id);
             return NoContent();
         }
@@ -161,47 +146,135 @@ namespace API.Controllers
             ProductDomain.ProductTypeId = product.ProductTypeId;
 
 
-           await _productsRepo.SaveAsync();
+            await _productsRepo.SaveAsync();
 
-           return NoContent();
+            return NoContent();
         }
 
         [HttpPost]
         public async Task<ActionResult<Product>> AddProduct(Product product)
         {
-            
+
             await _productsRepo.AddAsync(product);
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
 
-            
+
         }
+
+
+
+        //---------------------------------------------------------------------------------------------------------------------------------------------------
 
         [HttpPost("brand")]
-        public async Task<ActionResult<ProductBrand>> AddProductBrand([FromBody] ProductBrandDto productBrandDto)
+        public async Task<ActionResult> AddProductBrand([FromBody] RequestProductBrandDto requestproductBranddto)
         {
+            try
+            {
+                var BrandDomain = _mapper.Map<ProductBrand>(requestproductBranddto);
+                var BrandID = Guid.NewGuid();
+                BrandDomain.Id = BrandID;
+                if (BrandDomain == null)
+                {
+                    NotFound();
+                }
+                await _productBrandRepo.AddAsync(BrandDomain);
+                await _productBrandRepo.SaveAsync();
+                var savedProductBrandDto = _mapper.Map<ProductBrandDto>(BrandDomain);
+                _logger.LogInformation("Product brand added and saved successfully.");
+                return CreatedAtAction(nameof(GetProductBrands), new { id = BrandDomain.Id }, savedProductBrandDto);
+            }
+            catch (Exception ex)
+            {
 
-            //await _productBrandRepo.AddAsync(productBrandDto);
-            //return CreatedAtAction(nameof(GetProductBrands), new { id = productBrand.Id }, productBrand);
+                _logger.LogError(ex, "Error occurred while adding and saving the product brand.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
 
-         
-            var productDomainModel = _mapper.Map<ProductBrand>(productBrandDto);
-            
-            //use Domain model to create difficulty 
-            await _productBrandRepo.AddAsync(productDomainModel);
-
-            //Map domain model into DTO
-            return Ok(_mapper.Map<ProductBrand>(productBrandDto));
         }
+
+
 
         [HttpPost("type")]
-        public async Task<ActionResult<ProductType>> AddProductType(ProductType productType)
+        public async Task<ActionResult> AddProductType([FromBody] RequestProductTypeDto requestproductTypedto)
         {
 
-            await _productTypeRepo.AddAsync(productType);
-            return CreatedAtAction(nameof(GetProductTypes), new { id = productType.Id }, productType);
+            try
+            {
+                var TypeDomain = _mapper.Map<ProductType>(requestproductTypedto);
+                var TypeID = Guid.NewGuid();
+                TypeDomain.Id = TypeID;
+                if (TypeDomain == null)
+                {
+                    NotFound();
+                }
+                await _productTypeRepo.AddAsync(TypeDomain);
+                await _productTypeRepo.SaveAsync();
+                var savedProductTypeDto = _mapper.Map<ProductTypeDto>(TypeDomain);
+                _logger.LogInformation("Product Type added and saved successfully.");
+                return CreatedAtAction(nameof(GetProductTypes), new { id = TypeDomain.Id }, savedProductTypeDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while adding and saving the product Type.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
+     //---------------------------------------------------------------------------------------------------------------------------------------------------
+
+        [HttpDelete("brand/{id}")]
+        public async Task<ActionResult> DeleteProductBrand(Guid id)
+        {
+            try
+            {
+                var ProductBrand = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
+
+                if (ProductBrand == null)
+                {
+                    NotFound();
+                }
+
+                _productBrandRepo.Delete(ProductBrand);
+                await _productBrandRepo.SaveAsync();
+                _logger.LogInformation("Product brand deleted successfully.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting the product brand.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("type/{id}")]
+        public async Task<ActionResult> DeleteProductType(Guid id)
+        {
+            try
+            {
+                var ProductType = await _productTypeRepo.GetByIdAsync(product => product.Id == id);
+
+                if (ProductType == null)
+                {
+                    NotFound();
+                }
+
+                _productTypeRepo.Delete(ProductType);
+                await _productTypeRepo.SaveAsync();
+                _logger.LogInformation("Product type deleted successfully.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting the product type.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
     }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    
 }
