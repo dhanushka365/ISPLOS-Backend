@@ -1,0 +1,32 @@
+﻿[
+  {
+    "Id": 1,
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
+  },
+  {
+    "Id": 2,
+    "Name": "Burger Chains",
+    "Description": "Examples: McDonald's, Burger King, Wendy's, In-N-Out Burger"
+  },
+  {
+    "Id": 3,
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
+  },
+  {
+    "Id": 4,
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
+  },
+  {
+    "Id": 5,
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
+  },
+  {
+    "Id": 6,
+    "Name": "Pizza Brands",
+    "Description": "Examples: Domino's, Pizza Hut, Papa John's, Little Caesars"
+  }
+]
