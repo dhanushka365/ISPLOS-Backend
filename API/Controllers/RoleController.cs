@@ -51,6 +51,11 @@ namespace API.Controllers
 
             var RoleDomain = mapper.Map<Role>(requestRoleDTO);
 
+            var RoleID =  Guid.NewGuid();
+            RoleDomain.Id = RoleID;
+            RoleDomain.NormalizedName = RoleDomain.Name.ToUpper();
+            RoleDomain.ConcurrencyStamp = RoleID.ToString();
+
             if (RoleDomain == null)
             {
                 NotFound();
