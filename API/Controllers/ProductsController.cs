@@ -47,12 +47,13 @@ namespace API.Controllers
             
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<Product>> GetProduct([FromRoute] Guid id)
         {
             //return await _context.Products.FindAsync(id);
             //return Ok(await _repo.GetProductByIdAsync(id));
-            return Ok(await _productsRepo.GetByIdAsync(id));
+            await _productsRepo.GetByIdAsync(x=> x.Id.Equals(id));
+            return Ok();
         }
 
 

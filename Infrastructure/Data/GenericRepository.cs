@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,9 +19,9 @@ namespace Infrastructure.Data
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+           await _context.Set<T>().AddAsync(entity);
         }
 
         //public async Task<int> CountAsync(ISpecification<T> spec)
@@ -33,10 +34,10 @@ namespace Infrastructure.Data
             _context.Set<T>().Remove(entity);
         }
 
-        public async Task<T> GetByIdAsync(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
+        //public async Task<T> GetByIdAsync(int id)
+        //{
+        //    return await _context.Set<T>().FindAsync(id);
+        //}
 
         public async Task DeleteByIdAsync(int id)
         {
@@ -72,9 +73,24 @@ namespace Infrastructure.Data
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-      //private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-      //  {
-      //      return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
-      //  }
+        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate)
+        {
+           return  await _context.Set<T>().FirstOrDefaultAsync(predicate);
+        }
+
+        public  Task<T> FilterObject(Expression<Func<T, bool>> predicate)
+        {
+            return _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<T>> FilterList(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
+
+        //private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        //  {
+        //      return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        //  }
     }
 }
