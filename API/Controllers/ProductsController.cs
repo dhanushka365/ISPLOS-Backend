@@ -144,21 +144,22 @@ namespace API.Controllers
 
      
 
-        [HttpPut("{ProductBrandid}")]
-        public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrand productBrand)
+        [HttpPut("brands/{id}")]
+        public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrandUpdateDto productBrandUpdateDto)
         {
-            var ProductBrandDomain = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
+            var productBrandDomain = await _productBrandRepo.GetByIdAsync(product => product.Id == id);
 
-            if (ProductBrandDomain == null)
+            if (productBrandDomain == null)
             {
                 NotFound();
             }
 
-            ProductBrandDomain.Name = productBrand.Name;
+            productBrandDomain.Name = productBrandUpdateDto.Name;
+            productBrandDomain.Description = productBrandUpdateDto.Description;
 
             await _productBrandRepo.SaveAsync();
 
-            return NoContent();
+            return Ok(); 
         }
 
         [HttpPut("{id}")]
