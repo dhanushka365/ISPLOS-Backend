@@ -142,7 +142,23 @@ namespace API.Controllers
 
         }
 
-     
+        [HttpPut("type/{id}")]
+        public async Task<ActionResult> UpdateProductType(Guid id, productTypeUpdateDto productTypeUpdateDto)
+        {
+            var productTypeDomain = await _productTypeRepo.GetByIdAsync(product => product.Id == id);
+
+            if (productTypeDomain == null)
+            {
+                NotFound();
+            }
+
+            productTypeDomain.Name = productTypeUpdateDto.Name;
+
+            await _productTypeRepo.SaveAsync();
+
+            return Ok();
+        }
+
 
         [HttpPut("brands/{id}")]
         public async Task<ActionResult> UpdateProductBrand(Guid id, ProductBrandUpdateDto productBrandUpdateDto)
@@ -295,6 +311,10 @@ namespace API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+     
+
 
         [HttpDelete("type/{id}")]
         public async Task<ActionResult> DeleteProductType(Guid id)
