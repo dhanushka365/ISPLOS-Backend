@@ -16,7 +16,7 @@ namespace Core.Interfaces
 
         Task<List<T>> FilterList(Expression<Func<T, bool>> predicate);
 
-        Task<IReadOnlyList<T>> ListAllAsync();
+        Task<List<T>> ListAllAsync();
 
         Task AddAsync(T entity);
 
