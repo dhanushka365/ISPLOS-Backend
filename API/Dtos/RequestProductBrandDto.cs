@@ -2,11 +2,8 @@
 
 namespace API.Dtos
 {
-    public class ProductBrandDto
+    public class RequestProductBrandDto
     {
-        [Required]
-        public Guid Id { get; set; }
-
         [Required]
         public string Name { get; set; }
 

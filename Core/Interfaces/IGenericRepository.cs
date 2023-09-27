@@ -16,7 +16,13 @@ namespace Core.Interfaces
 
         Task<List<T>> FilterList(Expression<Func<T, bool>> predicate);
 
-        Task<IReadOnlyList<T>> ListAllAsync();
+        Task<IReadOnlyList<T>> ListAllAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            int? pageNumber = null,
+            int? pageSize = null);
+
+        IQueryable<T> GetAllQueryable();
 
         Task AddAsync(T entity);
 
@@ -25,5 +31,6 @@ namespace Core.Interfaces
         void Update(T entity);
 
         void Delete(T entity);
+
     }
 }
