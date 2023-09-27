@@ -12,5 +12,7 @@ namespace Core.Entities.OrderAggregate
         public string DeliveryTime { get; set; } // 2. Add this property
         public string Description { get; set; } // 3. Add this property
         public decimal deliveryPrice { get; set; } // 4. Add this property
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

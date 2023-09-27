@@ -17,5 +17,8 @@ namespace Core.Entities.OrderAggregate
 
         // Navigation property to the collection of related OrderStatus instances
         public ICollection<OrderStatus> OrderStatuses { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

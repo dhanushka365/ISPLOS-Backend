@@ -10,19 +10,17 @@ namespace Core.Entities
     public class Payment:BaseEntity
     {
         
-        public string PaymentMethod { get; set; } // Name of the payment method (e.g., "Credit Card", "PayPal")
+        public string PaymentMethod { get; set; } // Name of the payment method (e.g., "Credit Card", "PayPal" ,"cash")
         public string PaymentMethodType { get; set; } // Type of the payment method (e.g., "Credit Card", "Online Payment")
-        public string PaymentMethodDescription { get; set; } // Description or additional information about the payment method
-        public decimal Amount { get; set; } // Payment amount
-        public DateTime PaymentDate { get; set; } // Date and time of the payment
+        public string PaymentMethodDescription { get; set; } 
+        public decimal Amount { get; set; } 
+        public DateTime PaymentDate { get; set; } 
         public string TransactionId { get; set; } 
         public string Status { get; set; } // Payment status (e.g., "Pending", "Completed")
-        public string BuyerEmail { get; set; } 
-
-        
-        public int OrderId { get; set; }// Foreign key referencing the Order
+    
+        public int OrderId { get; set; }
       
-        public Order Order { get; set; }  // Navigation property to access the related Order object
+        public Order Order { get; set; }  
 
 
     }

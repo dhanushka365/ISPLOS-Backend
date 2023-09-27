@@ -16,6 +16,8 @@ namespace Core.Entities.OrderAggregate
 
         [Required]
         public Guid DeliveryMethodId { get; set; }//used
+        [Required]
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
 
         [Required]
         public DeliveryMethod DeliveryMethod { get; set; }//used
@@ -23,16 +25,20 @@ namespace Core.Entities.OrderAggregate
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
 
         [Required]
+        // Reference to the User who placed the order
+        public User User { get; set; }
+
+        [Required]
         // Change from OrderStatus to a collection of OrderStatus
         public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
-
-        public ProductItemOrdered ProductItemOrdered { get; set; } // Navigation property to ProductItemOrdered
 
         [Required]
         public string PaymentIntentId { get; set; }
 
         [Required]
-        public ICollection<Payment> Payments { get; set; } 
+        public ICollection<Payment> Payments { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
 
     }
