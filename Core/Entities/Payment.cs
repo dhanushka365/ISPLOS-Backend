@@ -14,9 +14,9 @@ namespace Core.Entities
         public string PaymentMethodType { get; set; } // Type of the payment method (e.g., "Credit Card", "Online Payment")
         public string PaymentMethodDescription { get; set; } 
         public decimal Amount { get; set; } 
-        public DateTime PaymentDate { get; set; } 
-        public string TransactionId { get; set; } 
-        public string Status { get; set; } // Payment status (e.g., "Pending", "Completed")
+        public DateTime PaymentDate { get; set; }
+        //public string TransactionId { get; set; } 
+        public PaymentStatus PaymentStatus { get; set; }// Payment status (e.g., "Pending", "Completed")
 
         // Add a navigation property to represent the associated orders.
         public ICollection<Order> Orders { get; set; } = new List<Order>();
