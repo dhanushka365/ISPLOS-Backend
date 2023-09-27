@@ -35,11 +35,17 @@ namespace Infrastructure.Data
             return _context.Set<T>();
         }
 
+        public async Task<List<T>> ListAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
         public async Task<IReadOnlyList<T>> ListAllAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             int? pageNumber = null,
             int? pageSize = null)
+
         {
             IQueryable<T> query = _dbSet;
 
