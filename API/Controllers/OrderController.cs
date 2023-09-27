@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -12,6 +13,11 @@ namespace API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMapper mapper;
+        private readonly IGenericRepository<Order> _ordersRepo;
+        private readonly IGenericRepository<OrderItem> _orderItemsRepo;
+        private readonly IGenericRepository<DeliveryMethod> _dmRepo;
+        private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
+        private readonly IGenericRepository<ProductItemOrdered> _produtItemOrdered;
 
         public OrderController( IMapper mapper)
         {
