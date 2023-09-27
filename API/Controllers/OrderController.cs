@@ -135,31 +135,6 @@ namespace API.Controllers
 
         }
 
-        //[HttpPost("CreateOrder")]
-        //public async Task<ActionResult<Order>> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
-        //{
-        //    try
-        //    {
-        //        var OrderDomain = _mapper.Map<Order>(requestOrderDto);
-        //        var OrderID = Guid.NewGuid();
-        //        OrderDomain.Id = OrderID;
-        //        if (OrderDomain == null)
-        //        {
-        //            NotFound();
-        //        }
-        //        await _ordersRepo.AddAsync(OrderDomain);
-        //        await _ordersRepo.SaveAsync();
-        //        var savedOrderBrandDto = _mapper.Map<RequestOrderDto>(OrderDomain);
-        //        _logger.LogInformation("Order added and saved successfully.");
-        //        return CreatedAtAction(nameof(GetOrderBrands), new { id = OrderDomain.Id }, savedOrderBrandDto);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        _logger.LogError(ex, "Error occurred while adding the Order.");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
 
         [HttpPut("UpdateOrder/{id}")]
         public async Task<IActionResult> UpdateOrder([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid id)
