@@ -12,17 +12,29 @@ namespace API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly IGenericRepository<Order> _ordersRepo;
         private readonly IGenericRepository<OrderItem> _orderItemsRepo;
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
         private readonly IGenericRepository<ProductItemOrdered> _produtItemOrdered;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController( IMapper mapper)
+        public OrderController( IConfiguration configuration, IGenericRepository<Order> ordersRepo,
+            IGenericRepository<OrderItem> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo, 
+            IGenericRepository<OrderStatus> orderStatusRepo, IGenericRepository<ProductItemOrdered> produtItemOrdered,
+            IMapper mapper, ILogger<OrderController> logger)
         {
-            
-            this.mapper = mapper;
+            _configuration = configuration;
+            _ordersRepo = ordersRepo;
+            _orderItemsRepo = orderItemsRepo;
+            _dmRepo = dmRepo;
+            _orderStatusRepo = orderStatusRepo;
+            _produtItemOrdered = produtItemOrdered;
+            _mapper = mapper;
+            _logger = logger;
+
         }
 
 
