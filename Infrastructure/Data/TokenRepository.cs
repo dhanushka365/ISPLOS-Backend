@@ -23,7 +23,7 @@ namespace Infrastructure.Data
         {
             var Claims = new List<Claim>();
 
-            Claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            Claims.Add(new Claim(ClaimTypes.Name, user.Email));
             Claims.Add(new Claim(ClaimTypes.Role, Role.Name));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:Key"]));

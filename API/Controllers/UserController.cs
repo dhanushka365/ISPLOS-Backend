@@ -2,6 +2,7 @@
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Get([FromQuery] string Name) {
 
             var userList = new List<User>();
@@ -43,6 +45,8 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [HttpGet]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             var user  =  await userRepository.GetByIdAsync(x=> x.Id == id);
@@ -53,6 +57,7 @@ namespace API.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] RequestUserDTO requestUserDTO)
         {
             var UserDomain = new User
@@ -79,6 +84,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}/Password")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RequestUpdateUserPasswordDTO userPasswordDTO)
         {
             var UserDomain = await userRepository.GetByIdAsync(x => x.Id == id);
@@ -104,6 +110,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RequestUpdateUser requestUserDTO)
         {
           var UserDomain  =  await userRepository.GetByIdAsync (x=> x.Id == id);
@@ -134,6 +141,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var UserDomain = await userRepository.GetByIdAsync(x => x.Id == id);

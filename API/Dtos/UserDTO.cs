@@ -14,7 +14,7 @@ namespace API.Dtos
 
         public string Avatar { get; set; }
 
-        public Guid RoleId { get; set; }
+     //   public Guid RoleId { get; set; }
 
     }
 }
