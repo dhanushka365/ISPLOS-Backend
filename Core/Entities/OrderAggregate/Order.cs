@@ -29,11 +29,11 @@ namespace Core.Entities.OrderAggregate
        
         public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
-        [Required]
-        public string PaymentIntentId { get; set; }
+        // Other order properties.
 
-        [Required]
-        public ICollection<Payment> Payments { get; set; }
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 

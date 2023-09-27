@@ -17,10 +17,9 @@ namespace Core.Entities
         public DateTime PaymentDate { get; set; } 
         public string TransactionId { get; set; } 
         public string Status { get; set; } // Payment status (e.g., "Pending", "Completed")
-    
-        public int OrderId { get; set; }
-      
-        public Order Order { get; set; }  
+
+        // Add a navigation property to represent the associated orders.
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
 
 
     }
