@@ -13,9 +13,11 @@ namespace Infrastructure.Data
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
+        private readonly DbSet<T> _dbSet;
         public GenericRepository(StoreContext context)
         {
             _context = context;
+            _dbSet = _context.Set<T>();
         }
 
         public async Task AddAsync(T entity)
@@ -33,9 +35,37 @@ namespace Infrastructure.Data
             return _context.Set<T>();
         }
 
-        public async Task<IReadOnlyList<T>> ListAllAsync()
+        public async Task<IReadOnlyList<T>> ListAllAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            int? pageNumber = null,
+            int? pageSize = null)
         {
-            return await _context.Set<T>().ToListAsync();
+            IQueryable<T> query = _dbSet;
+
+            // Apply filtering
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            // Apply sorting
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            // Apply pagination
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                int skip = (pageNumber.Value - 1) * pageSize.Value;
+                query = query.Skip(skip).Take(pageSize.Value);
+            }
+
+            return await query.ToListAsync();
+
+
+            //return await _context.Set<T>().ToListAsync();
         }
 
 

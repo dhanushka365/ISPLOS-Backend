@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 using System.Net.WebSockets;
 
 namespace API.Controllers
@@ -106,10 +107,30 @@ namespace API.Controllers
 
 
         [HttpGet("brands")]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(
+              [FromQuery] string search = null, // Filter parameter
+              [FromQuery] int page = 1,         // Page number parameter
+              [FromQuery] int pageSize = 10)
         {
+            // Define a filter expression based on the search parameter (you can adjust this as needed)
+            Expression<Func<ProductBrand, bool>> filter = null;
+            if (!string.IsNullOrEmpty(search))
+            {
+                filter = brand => brand.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
 
-            return Ok(await _productBrandRepo.ListAllAsync());
+            // Calculate the number of items to skip based on the page and page size
+            int skip = (page - 1) * pageSize;
+
+            // Retrieve product brands with filtering and pagination
+            var brands = await _productBrandRepo.ListAllAsync(
+                filter: filter,
+                orderBy: null, // You can specify sorting logic here if needed
+                pageNumber: page,
+                pageSize: pageSize);
+
+            return Ok(brands);
+            //return Ok(await _productBrandRepo.ListAllAsync());
         }
 
         [HttpGet("types")]
