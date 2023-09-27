@@ -11,8 +11,7 @@ namespace Core.Entities.Identity
     public class User : IdentityUser<Guid>
     {
         [Required(ErrorMessage = "Name is required")]
-
-        public Guid UserId { get; set; }
+        public override Guid Id { get; set; }
 
         public string Name { get; set; }
 
