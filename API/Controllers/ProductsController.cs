@@ -46,10 +46,10 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            // Get the IQueryable<Product> from your repository, but don't execute it yet.
+            
             var queryableProducts = _productsRepo.GetAllQueryable();
 
-            // Include the related product type and brand information in the query.
+            
             var products = await queryableProducts
                 .Include(p => p.ProductType)
                 .Include(p => p.ProductBrand)
@@ -85,10 +85,10 @@ namespace API.Controllers
 
             if (product == null)
             {
-                return NotFound(); // Return a 404 Not Found response
+                return NotFound(); 
             }
 
-            // Check if ProductType and ProductBrand are not null before accessing their properties
+           
             var productToReturn = new ProductToReturnDto
             {
                 Id = product.Id,
@@ -102,30 +102,30 @@ namespace API.Controllers
                 ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
             };
 
-            return Ok(productToReturn); // Return the ProductToReturnDto as a JSON response
+            return Ok(productToReturn); 
         }
 
 
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(
-              [FromQuery] string search = null, // Filter parameter
-              [FromQuery] int page = 1,         // Page number parameter
+              [FromQuery] string search = null, 
+              [FromQuery] int page = 1,         
               [FromQuery] int pageSize = 10)
         {
-            // Define a filter expression based on the search parameter (you can adjust this as needed)
+            
             Expression<Func<ProductBrand, bool>> filter = null;
             if (!string.IsNullOrEmpty(search))
             {
                 filter = brand => brand.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
             }
 
-            // Calculate the number of items to skip based on the page and page size
+           
             int skip = (page - 1) * pageSize;
 
-            // Retrieve product brands with filtering and pagination
+            
             var brands = await _productBrandRepo.ListAllAsync(
                 filter: filter,
-                orderBy: null, // You can specify sorting logic here if needed
+                orderBy: null, 
                 pageNumber: page,
                 pageSize: pageSize);
 
