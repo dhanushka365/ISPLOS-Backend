@@ -97,6 +97,22 @@ namespace Infrastructure.Data
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            bool isTracked = _context.ChangeTracker.Entries<T>().Any(e => e.Entity == entity);
 
+            if (!isTracked)
+            {
+                _context.Set<T>().Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            }
+
+            // Save changes asynchronously
+             await _context.SaveChangesAsync();
+        }
     }
 }

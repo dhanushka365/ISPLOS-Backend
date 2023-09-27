@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities.OrderAggregate
 {
-    public class OrderStatus : BaseEntity
+    public class OrderStatus :BaseEntity
     {
         //1- Pending
         //2- Processing

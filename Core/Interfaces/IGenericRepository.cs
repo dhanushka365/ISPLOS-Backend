@@ -26,6 +26,9 @@ namespace Core.Interfaces
 
         Task AddAsync(T entity);
 
+        Task UpdateAsync(T entity);
+
+
         Task SaveAsync();
 
         void Update(T entity);
