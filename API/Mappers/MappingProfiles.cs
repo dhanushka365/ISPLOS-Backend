@@ -15,7 +15,11 @@ namespace API.Mappers
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<User,RequestUserDTO>().ReverseMap();
-
+            CreateMap<Product, RequestProductDto>().ReverseMap();
+            CreateMap<ProductBrand,RequestProductBrandDto>().ReverseMap();
+            CreateMap<ProductBrand, ProductBrandDto>().ReverseMap();
+            CreateMap<ProductType, RequestProductTypeDto>().ReverseMap();
+            CreateMap<ProductType, ProductTypeDto>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Dtos
 {
@@ -13,16 +14,17 @@ namespace API.Dtos
         [Required]
         public string Description { get; set; }
 
-        [Required]
+        [Range(0.10, 10000)]
         public decimal Price { get; set; }
 
         [Required]
         public string PictureUrl { get; set; }
 
         [Required]
-        public string ProductType { get; set; }
+        public Guid ProductTypeId { get; set; }
 
         [Required]
-        public string ProductBrand { get; set; }
+        public Guid ProductBrandId { get; set; }
+
     }
 }
