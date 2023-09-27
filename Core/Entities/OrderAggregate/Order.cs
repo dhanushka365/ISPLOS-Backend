@@ -12,9 +12,6 @@ namespace Core.Entities.OrderAggregate
     {
 
         [Required]
-        public string BuyerEmail { get; set; }//used
-
-        [Required]
         public Guid DeliveryMethodId { get; set; }//used
         [Required]
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
@@ -29,7 +26,7 @@ namespace Core.Entities.OrderAggregate
         public User User { get; set; }
 
         [Required]
-        // Change from OrderStatus to a collection of OrderStatus
+       
         public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
         [Required]
