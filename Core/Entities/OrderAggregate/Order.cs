@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,33 +10,30 @@ namespace Core.Entities.OrderAggregate
 {
     public class Order : BaseEntity
     {
-        public Order()
-        {
-        }
 
-        public Order(IReadOnlyList<OrderItem> orderItems, string buyerEmail, DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId)
-        {
-            BuyerEmail = buyerEmail;
-            DeliveryMethod = deliveryMethod;
-            OrderItems = orderItems;
-            Subtotal = subtotal;
-            PaymentIntentId = paymentIntentId;
-        }
+        [Required]
+        public string BuyerEmail { get; set; }//used
 
-        public string BuyerEmail { get; set; }
-        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
-        public DeliveryMethod DeliveryMethod { get; set; }
-        public IReadOnlyList<OrderItem> OrderItems { get; set; }
-        public decimal Subtotal { get; set; }
-        public OrderStatus Status { get; set; }//unpaid , paid , shipped , delivered , cancelled
+        [Required]
+        public Guid DeliveryMethodId { get; set; }//used
+
+        [Required]
+        public DeliveryMethod DeliveryMethod { get; set; }//used
+        [Required]
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
+
+        [Required]
+        // Change from OrderStatus to a collection of OrderStatus
+        public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
+
+        public ProductItemOrdered ProductItemOrdered { get; set; } // Navigation property to ProductItemOrdered
+
+        [Required]
         public string PaymentIntentId { get; set; }
 
+        [Required]
+        public ICollection<Payment> Payments { get; set; } 
 
-        public ICollection<Payment> Payments { get; set; } // Add a collection of payments associated with this order
 
-        public decimal GetTotal()
-        {
-            return Subtotal + DeliveryMethod.Price;
-        }
     }
 }

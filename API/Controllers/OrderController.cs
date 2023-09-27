@@ -105,36 +105,7 @@ namespace API.Controllers
             return Ok(orderItems);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] RequestOrderDto requestOrderDto)
-        {
-
-            var OrderDomain = _mapper.Map<Order>(requestOrderDto);
-
-            var OrderID =  Guid.NewGuid();
-            OrderDomain.Id = OrderID;
-            OrderDomain.OrderDate = DateTimeOffset.Now;
-            OrderDomain.DeliveryMethod = new DeliveryMethod { };
-            OrderDomain.OrderItems = new List<OrderItem>();
-            OrderDomain.Subtotal = 0;
-            OrderDomain.Status = new OrderStatus { };
-            OrderDomain.PaymentIntentId = OrderID.ToString();
-
-
-            if (OrderDomain == null)
-            {
-                NotFound();
-            }
-
-            await _ordersRepo.AddAsync(OrderDomain);
-            await _ordersRepo.SaveAsync();
-
-            var OrderDTO = _mapper.Map<RequestOrderDto>(OrderDomain);
-
-            return CreatedAtAction(nameof(GetOrderBrands), new { id = OrderDomain.Id }, OrderDTO);
-
-        }
-
+        
 
         [HttpPut("UpdateOrder/{id}")]
         public async Task<IActionResult> UpdateOrder([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid id)

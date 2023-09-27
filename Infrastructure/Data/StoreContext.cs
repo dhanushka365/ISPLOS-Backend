@@ -27,7 +27,7 @@ namespace Infrastructure.Data
       
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<Order>()
+            modelBuilder.Entity<ProductItemOrdered>()
                 .Property(o => o.Subtotal)
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
@@ -35,9 +35,20 @@ namespace Infrastructure.Data
                 .Property(p => p.Amount)
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
-            modelBuilder.Entity<DeliveryMethod>()
-                .Property(d => d.Price)
-                .HasColumnType("decimal(18, 2)");
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderItems)
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.ProductItemOrdered)  // Order is the principal side
+                .WithOne(p => p.Order)              // ProductItemOrdered is the dependent side
+                .HasForeignKey<ProductItemOrdered>(p => p.OrderId);  // Define the foreign key property
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
 
 
         }

@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Entities.OrderAggregate
 {
-    public class ProductItemOrdered
+    public class ProductItemOrdered :BaseEntity
     {
-        public ProductItemOrdered()
-        {
-        }
+        [Required]
+        public Guid OrderId { get; set; } // Foreign key to the Order entity
 
-        public ProductItemOrdered(int productItemId, string productName, string pictureUrl)
-        {
-            ProductItemId = productItemId;
-            ProductName = productName;
-            PictureUrl = pictureUrl;
-        }
+        [Required]
+        public Order Order { get; set; } // Navigation property to the Order entity
 
-        public int ProductItemId { get; set; }
-        public string ProductName { get; set; }
-        public string PictureUrl { get; set; }
+        [Required]
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
+
+        [Required]
+        public decimal Subtotal { get; set; }//used
     }
 }

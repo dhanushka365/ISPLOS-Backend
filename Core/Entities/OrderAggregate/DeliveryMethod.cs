@@ -11,6 +11,6 @@ namespace Core.Entities.OrderAggregate
         public string ShortName { get; set; } // 1. Add this property
         public string DeliveryTime { get; set; } // 2. Add this property
         public string Description { get; set; } // 3. Add this property
-        public decimal Price { get; set; } // 4. Add this property
+        public decimal deliveryPrice { get; set; } // 4. Add this property
     }
 }

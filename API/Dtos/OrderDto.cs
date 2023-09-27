@@ -37,7 +37,7 @@ namespace API.Dtos
         public string BuyerEmail { get; set; }
 
         [Required]
-        public string OrderDate { get; set; }
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
 
         [Required]
         public string DeliveryMethod { get; set; }
