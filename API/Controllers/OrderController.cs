@@ -37,33 +37,38 @@ namespace API.Controllers
 
         }
 
+        [HttpGet("api-key")]
+        public IActionResult GetApiKey()
+        {
+            var apiKey = _configuration["ConnectionStrings:DefaultConnection"];
+            return Ok(apiKey);
+        }
 
-        //[HttpGet("Orders")]
-        //public async Task<ActionResult<IReadOnlyList<Order>>> GetProductBrands(
-        //     [FromQuery] string search = null,
-        //     [FromQuery] int page = 1,
-        //     [FromQuery] int pageSize = 10)
-        //{
+        [HttpGet("Orders")]
+        public async Task<ActionResult<IReadOnlyList<Order>>> GetProductBrands(
+                        [FromQuery] string search = null,
+                        [FromQuery] int page = 1,
+                        [FromQuery] int pageSize = 10)
+        {
 
-        //    Expression<Func<Order, bool>> filter = null;
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-        //        filter = order => order.BuyerEmail.Contains(search, StringComparison.OrdinalIgnoreCase);
-        //    }
+            Expression<Func<Order, bool>> filter = null;
+            if (!string.IsNullOrEmpty(search))
+            {
+                filter = order => order.BuyerEmail.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
+            int skip = (page - 1) * pageSize;
 
+            var orders = await _ordersRepo.ListAllAsync(
+                filter: filter,
+                orderBy: null,
+                pageNumber: page,
+                pageSize: pageSize);
 
-        //    int skip = (page - 1) * pageSize;
+            return Ok(orders);
 
+        }
 
-        //    var brands = await _productBrandRepo.ListAllAsync(
-        //        filter: filter,
-        //        orderBy: null,
-        //        pageNumber: page,
-        //        pageSize: pageSize);
-
-        //    return Ok(brands);
-        //    //return Ok(await _productBrandRepo.ListAllAsync());
-        //}
+        
 
 
     }
