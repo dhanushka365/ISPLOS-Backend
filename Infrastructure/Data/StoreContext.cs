@@ -21,16 +21,21 @@ namespace Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
+
+        public DbSet<OrderStatusType> OrderStatuseTypes { get; set; }
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
       
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<ProductItemOrdered>()
-                .Property(o => o.Subtotal)
-                .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
-
+       
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
@@ -40,15 +45,19 @@ namespace Infrastructure.Data
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId);
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.ProductItemOrdered)  // Order is the principal side
-                .WithOne(p => p.Order)              // ProductItemOrdered is the dependent side
-                .HasForeignKey<ProductItemOrdered>(p => p.OrderId);  // Define the foreign key property
-
+      
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId);
+
+
+            //modelBuilder.Entity<Balance>()
+            //    .HasOne(b => b.CreatedByUser)
+            //    .WithMany()
+            //    .HasForeignKey(b => b.UserId)
+            //    .OnDelete(DeleteBehavior.Restrict); // Adjust the delete behavior as needed
+
 
 
         }

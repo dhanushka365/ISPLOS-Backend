@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Entities.Identity;
 using Core.Entities.OrderAggregate;
 
 namespace Core.Entities
@@ -18,8 +19,11 @@ namespace Core.Entities
         //public string TransactionId { get; set; } 
         public PaymentStatus PaymentStatus { get; set; }// Payment status (e.g., "Pending", "Completed")
 
-        // Add a navigation property to represent the associated orders.
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        public Guid UserId { get; set; }
+
+        public User User { get; set; }
 
 
     }

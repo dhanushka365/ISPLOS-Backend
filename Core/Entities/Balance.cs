@@ -14,22 +14,14 @@ namespace Core.Entities
 
         public double remainBalance { get; set; }
 
-        [ForeignKey("UserId")]
+   
         public Guid UserId { get; set; }
 
         public User User { get; set; }
 
-  
-        [ForeignKey("CreatedByUserId")]
-        public Guid CreatedByUserId { get; set; }
+        public string CreatedByUser { get; set; }
 
-        
-        public User CreatedByUser { get; set; }
-
-        [ForeignKey("UpdatedByUserId")]
-        public Guid UpdatedByUserId { get; set; }
-
-        public User UpdatedByUser { get; set; }
+        public string UpdatedByUser { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

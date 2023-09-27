@@ -25,5 +25,8 @@ namespace Core.Entities.Identity
 
         // Navigation property to represent the user's orders
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        // Navigation property to represent the user's payments
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }
