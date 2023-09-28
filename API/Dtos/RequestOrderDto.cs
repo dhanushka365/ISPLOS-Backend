@@ -15,7 +15,7 @@ namespace API.Dtos
         [Required]
         public DeliveryMethod DeliveryMethod { get; set; }//used
         [Required]
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
+        public ICollection<OrderProduct> OrderItems { get; set; } = new List<OrderProduct>();//used
 
         [Required]
 
