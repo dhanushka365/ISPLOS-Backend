@@ -25,6 +25,7 @@ builder.Configuration
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddMvc();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
