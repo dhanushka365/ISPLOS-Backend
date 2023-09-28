@@ -19,7 +19,7 @@ namespace Core.Entities.OrderAggregate
         [Required]
         public DeliveryMethod DeliveryMethod { get; set; }//used
         [Required]
-        public ICollection<OrderProduct> OrderItems { get; set; } = new List<OrderProduct>();//used
+        public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();//used
 
         [Required]
         public User User { get; set; }

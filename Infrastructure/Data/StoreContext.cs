@@ -41,14 +41,14 @@ namespace Infrastructure.Data
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.OrderItems)
+                .HasMany(o => o.OrderProducts)
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId);
 
       
             modelBuilder.Entity<OrderProduct>()
                 .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
+                .WithMany(o => o.OrderProducts)
                 .HasForeignKey(oi => oi.OrderId);
 
 
