@@ -26,16 +26,12 @@ namespace Infrastructure.Data
         public async Task<Product> GetProductByIdAsync(Guid id)
         {
             return await _context.Products
-                .Include(p => p.ProductType)//this is called eager loading
-                .Include(p => p.ProductBrand)//this is called eager loading
                 .FirstOrDefaultAsync(x => x.Id == id);//this is called lazy loading
         }
 
         public async Task<IReadOnlyList<Product>> GetProductsAsync()
         {
             return await _context.Products
-                .Include(p => p.ProductType)//this is called eager loading
-                .Include(p => p.ProductBrand)//this is called eager loading
                 .ToListAsync();//this is called lazy loading
 
         }
