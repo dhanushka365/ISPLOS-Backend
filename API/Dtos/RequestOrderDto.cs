@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Entities.Identity;
+using Core.Entities.OrderAggregate;
+using Core.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entities.Identity;
 
-namespace Core.Entities.OrderAggregate
+namespace API.Dtos
 {
-    public class Order : BaseEntity
+    public class RequestOrderDto
     {
-
         [Required]
         public Guid DeliveryMethodId { get; set; }//used
         [Required]
@@ -22,10 +18,7 @@ namespace Core.Entities.OrderAggregate
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
 
         [Required]
-        public User User { get; set; }
 
-        [Required]
-       
         public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
         public int PaymentId { get; set; }
@@ -33,7 +26,5 @@ namespace Core.Entities.OrderAggregate
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-
     }
 }

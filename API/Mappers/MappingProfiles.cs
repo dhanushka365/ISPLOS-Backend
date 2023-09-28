@@ -20,6 +20,18 @@ namespace API.Mappers
             CreateMap<ProductBrand, ProductBrandDto>().ReverseMap();
             CreateMap<ProductType, RequestProductTypeDto>().ReverseMap();
             CreateMap<ProductType, ProductTypeDto>().ReverseMap();
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<Order, RequestOrderDto>().ReverseMap();
+            CreateMap<OrderStatus, OrderStatusDto>().ReverseMap();
+            CreateMap<OrderStatus, RequestOrderStatusDto>().ReverseMap();
+            CreateMap<OrderStatusType, OrderStatusTypeDto>().ReverseMap();
+            CreateMap<OrderStatusType, RequestOrderStatusTypeDto>().ReverseMap();
+
+            //CreateMap<RequestOrderDto, Order>().ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems)).ReverseMap();
+
+          
+
+
         }
     }
 }

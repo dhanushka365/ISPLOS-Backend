@@ -2,7 +2,7 @@
 
 namespace API.Dtos
 {
-    public class ProductBrandUpdateDto
+    public class RequestOrderStatusTypeDto
     {
         [Required]
         public string Name { get; set; }
@@ -10,5 +10,7 @@ namespace API.Dtos
         [Required]
         public string Description { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

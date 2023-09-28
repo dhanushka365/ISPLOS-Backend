@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Core.Entities.OrderAggregate;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +22,10 @@ namespace Core.Entities.Identity
 
         public Role Role { get; set; }
 
+        // Navigation property to represent the user's orders
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
 
+        // Navigation property to represent the user's payments
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

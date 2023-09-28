@@ -12,12 +12,21 @@ namespace Core.Entities
     {
 
 
-        public double Amount { get; set; }
+        public double remainBalance { get; set; }
 
-        [ForeignKey("UserId")]
+   
         public Guid UserId { get; set; }
 
         public User User { get; set; }
+
+        public string CreatedByUser { get; set; }
+
+        public string UpdatedByUser { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+
 
     }
 }
