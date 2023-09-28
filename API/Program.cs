@@ -124,14 +124,14 @@ app.MapControllers();
 using var scoped = app.Services.CreateScope();
 var services = scoped.ServiceProvider;
 var context = services.GetRequiredService<StoreContext>();
-
+try
 {
     await context.Database.MigrateAsync();
     
 }
 catch (Exception ex)
 {
-    logger.LogError(ex, "An error occurred during migration");
+    logger.Error(ex, "An error occurred during migration");
 
 }
 
