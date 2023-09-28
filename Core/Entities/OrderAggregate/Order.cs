@@ -12,27 +12,33 @@ namespace Core.Entities.OrderAggregate
     {
 
         [Required]
+        [DataType(DataType.Date)]
+
+        public DateTime OrderDate { get; set; } 
+
+
         public Guid DeliveryMethodId { get; set; }//used
-        [Required]
-        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
-
-        [Required]
         public DeliveryMethod DeliveryMethod { get; set; }//used
-        [Required]
-        public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();//used
+
 
         [Required]
+        public Guid UserID { get; set; }
         public User User { get; set; }
 
+
+
         [Required]
-       
-        public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
+        public Guid OrderStatusId { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
-        public int PaymentId { get; set; }
-        public Payment Payment { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+
+        public IList<OrderProduct> OrderProducts { get; set; } //used
+
+
+        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
 
     }
