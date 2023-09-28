@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities.OrderAggregate;
+using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
@@ -10,25 +11,25 @@ namespace Core.Entities
         [Required]
         public string Description { get; set; }
 
-        [Range(0.10, 10000)]
+        [Required]
+        [Range(1, 10000)]
         public decimal Price { get; set; }
 
-        [Required]
+
         public string PictureUrl { get; set; }
 
-        [Required]
+
+        public Guid ProductTypeId { get; set; }
         public ProductType ProductType { get; set; }
 
-        [Required]
-        public Guid ProductTypeId { get; set; }
 
-        [Required]
+        public Guid ProductBrandId { get; set; }
         public ProductBrand ProductBrand { get; set; }
 
-        [Required]
-        public Guid ProductBrandId { get; set; }
+        public IList<OrderProduct> OrderProducts { get; set; } //used
 
-
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
     }
 }

@@ -179,36 +179,40 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("DeliveryMethodId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("OrderDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OrderStatusId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PaymentId1")
+                    b.Property<Guid?>("PaymentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryMethodId");
 
-                    b.HasIndex("PaymentId1");
+                    b.HasIndex("OrderStatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderProduct", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -217,10 +221,7 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
@@ -229,13 +230,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
+                    b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderStatus", b =>
@@ -249,9 +248,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrderStatusTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -269,8 +265,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("OrderStatusTypeId");
 
@@ -367,6 +361,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(180)
@@ -389,6 +386,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<Guid>("ProductTypeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -463,19 +463,25 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Payment", "Payment")
+                    b.HasOne("Core.Entities.OrderAggregate.OrderStatus", "OrderStatus")
+                        .WithMany()
+                        .HasForeignKey("OrderStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Payment", null)
                         .WithMany("Orders")
-                        .HasForeignKey("PaymentId1");
+                        .HasForeignKey("PaymentId");
 
                     b.HasOne("Core.Entities.Identity.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DeliveryMethod");
 
-                    b.Navigation("Payment");
+                    b.Navigation("OrderStatus");
 
                     b.Navigation("User");
                 });
@@ -483,13 +489,13 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderProduct", b =>
                 {
                     b.HasOne("Core.Entities.OrderAggregate.Order", "Order")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -501,10 +507,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderStatus", b =>
                 {
-                    b.HasOne("Core.Entities.OrderAggregate.Order", null)
-                        .WithMany("OrderStatuses")
-                        .HasForeignKey("OrderId");
-
                     b.HasOne("Core.Entities.OrderAggregate.OrderStatusType", "OrderStatusType")
                         .WithMany("OrderStatuses")
                         .HasForeignKey("OrderStatusTypeId")
@@ -559,9 +561,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
                 {
-                    b.Navigation("OrderItems");
-
-                    b.Navigation("OrderStatuses");
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.OrderStatusType", b =>
@@ -577,6 +577,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.PaymentStatus", b =>
                 {
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("Core.Entities.Product", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

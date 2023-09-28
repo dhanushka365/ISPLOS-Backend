@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Newdb323120lfdg : Migration
+    public partial class SetUpDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -98,6 +98,30 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatusCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StatusMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderStatusTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderStatuses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderStatuses_OrderStatuseTypes_OrderStatusTypeId",
+                        column: x => x.OrderStatusTypeId,
+                        principalTable: "OrderStatuseTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -107,7 +131,9 @@ namespace Infrastructure.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductBrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ProductBrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -131,7 +157,6 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -218,13 +243,13 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeliveryMethodId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaymentId = table.Column<int>(type: "int", nullable: false),
-                    PaymentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderStatusId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -236,67 +261,49 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Payments_PaymentId1",
-                        column: x => x.PaymentId1,
+                        name: "FK_Orders_OrderStatuses_OrderStatusId",
+                        column: x => x.OrderStatusId,
+                        principalTable: "OrderStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Payments_PaymentId",
+                        column: x => x.PaymentId,
                         principalTable: "Payments",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Orders_Users_UserID",
+                        column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "OrderProducts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CurrentPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.PrimaryKey("PK_OrderProducts", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
+                        name: "FK_OrderProducts_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderStatuses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StatusCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StatusMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderStatusTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderStatuses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderStatuses_OrderStatuseTypes_OrderStatusTypeId",
-                        column: x => x.OrderStatusTypeId,
-                        principalTable: "OrderStatuseTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderStatuses_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_OrderProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -307,9 +314,9 @@ namespace Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_OrderId",
-                table: "OrderItems",
-                column: "OrderId");
+                name: "IX_OrderProducts_ProductId",
+                table: "OrderProducts",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_DeliveryMethodId",
@@ -317,19 +324,19 @@ namespace Infrastructure.Migrations
                 column: "DeliveryMethodId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_PaymentId1",
+                name: "IX_Orders_OrderStatusId",
                 table: "Orders",
-                column: "PaymentId1");
+                column: "OrderStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId",
+                name: "IX_Orders_PaymentId",
                 table: "Orders",
-                column: "UserId");
+                column: "PaymentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderStatuses_OrderId",
-                table: "OrderStatuses",
-                column: "OrderId");
+                name: "IX_Orders_UserID",
+                table: "Orders",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderStatuses_OrderStatusTypeId",
@@ -369,19 +376,22 @@ namespace Infrastructure.Migrations
                 name: "Balances");
 
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "OrderProducts");
 
             migrationBuilder.DropTable(
-                name: "OrderStatuses");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "OrderStatuseTypes");
+                name: "DeliveryMethods");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "OrderStatuses");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "ProductBrands");
@@ -390,10 +400,7 @@ namespace Infrastructure.Migrations
                 name: "ProductTypes");
 
             migrationBuilder.DropTable(
-                name: "DeliveryMethods");
-
-            migrationBuilder.DropTable(
-                name: "Payments");
+                name: "OrderStatuseTypes");
 
             migrationBuilder.DropTable(
                 name: "PaymentStatus");
