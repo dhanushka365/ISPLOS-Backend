@@ -19,7 +19,7 @@ namespace Infrastructure.Data
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderProduct> OrderItems { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
@@ -41,14 +41,14 @@ namespace Infrastructure.Data
                 .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
 
             modelBuilder.Entity<Order>()
-                .HasMany(o => o.OrderItems)
+                .HasMany(o => o.OrderProducts)
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId);
 
       
-            modelBuilder.Entity<OrderItem>()
+            modelBuilder.Entity<OrderProduct>()
                 .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
+                .WithMany(o => o.OrderProducts)
                 .HasForeignKey(oi => oi.OrderId);
 
 
