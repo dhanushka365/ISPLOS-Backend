@@ -6,6 +6,8 @@ using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace API.Controllers
@@ -20,12 +22,13 @@ namespace API.Controllers
         private readonly IGenericRepository<OrderItem> _orderItemsRepo;
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
+        private readonly IGenericRepository<OrderStatusType> _orderStatusTypeRepo;
 
         private readonly ILogger<OrderController> _logger;
 
         public OrderController(IConfiguration configuration, IGenericRepository<Order> ordersRepo,
             IGenericRepository<OrderItem> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo,
-            IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo)
+            IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo, IGenericRepository<OrderStatusType> orderStatusTypeRepo)
         {
             _configuration = configuration;
             _ordersRepo = ordersRepo;
@@ -34,6 +37,8 @@ namespace API.Controllers
             _mapper = mapper;
             _logger = logger;
             _orderStatusRepo = orderStatusRepo;
+            _orderStatusTypeRepo = orderStatusTypeRepo;
+
         }
 
         [HttpGet("api-key")]
@@ -84,8 +89,6 @@ namespace API.Controllers
                 }
 
                 await _ordersRepo.AddAsync(order);
-
- 
                 await _ordersRepo.SaveAsync();
 
                 var createdOrderDto = _mapper.Map<OrderDto>(order);
@@ -101,6 +104,7 @@ namespace API.Controllers
             }
         }
 
+
         [HttpPost("orderStatus")]
         public async Task<IActionResult> CreateOrderStatus([FromBody] RequestOrderStatusDto requestDto)
         {
@@ -110,13 +114,30 @@ namespace API.Controllers
             }
 
             var orderStatus = _mapper.Map<OrderStatus>(requestDto);
-
+            orderStatus.Id = Guid.NewGuid();
             await _orderStatusRepo.AddAsync(orderStatus);
             await _orderStatusRepo.SaveAsync();
-
             var orderStatusDto = _mapper.Map<OrderStatusDto>(orderStatus);
 
             return CreatedAtAction(nameof(GetOrderStatus), new { id = orderStatus.Id }, orderStatusDto);
+        }
+
+
+   
+        [HttpPost("orderStatusTypes")]
+        public async Task<IActionResult> CreateOrderStatusType([FromBody] RequestOrderStatusTypeDto orderStatusTypeDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var orderStatusType = _mapper.Map<OrderStatusType>(orderStatusTypeDto);
+            await _orderStatusTypeRepo.AddAsync(orderStatusType);
+            await _orderStatusTypeRepo.SaveAsync();
+            var createdDto = _mapper.Map<OrderStatusTypeDto>(orderStatusType);
+
+            return CreatedAtAction(nameof(GetOrderStatusTypes), new { id = createdDto.Id }, createdDto);
         }
 
 
@@ -150,6 +171,8 @@ namespace API.Controllers
             return Ok(orderStatusDtos);
         }
 
+
+
         [HttpGet("OrderStatus/{id:Guid}")]
         public async Task<ActionResult<OrderStatusDto>> GetOrderStatus([FromRoute] Guid id)
         {
@@ -164,6 +187,60 @@ namespace API.Controllers
             var orderStatusDto = _mapper.Map<OrderStatusDto>(orderStatus);
 
             return Ok(orderStatusDto); 
+        }
+
+
+        [HttpGet("OrderStatusTypes")]
+        public async Task<ActionResult<IReadOnlyList<OrderStatusTypeDto>>> GetOrderStatusTypes(
+            [FromQuery] string search = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string orderBy = "name",
+            [FromQuery] bool desc = false)
+        {
+            Expression<Func<OrderStatusType, bool>> filter = null;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                filter = orderStatusType => orderStatusType.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
+
+            int skip = (page - 1) * pageSize;
+
+            Expression<Func<OrderStatusType, object>> sortingExpression;
+
+            if (string.Equals(orderBy, "name", StringComparison.OrdinalIgnoreCase))
+            {
+                sortingExpression = orderStatusType => orderStatusType.Name;
+            }
+            else
+            {
+                sortingExpression = orderStatusType => orderStatusType.Name;
+            }
+
+            IQueryable<OrderStatusType> orderedQuery;
+            if (desc)
+            {
+                orderedQuery = _orderStatusTypeRepo.Query().OrderByDescending(sortingExpression);
+            }
+            else
+            {
+                orderedQuery = _orderStatusTypeRepo.Query().OrderBy(sortingExpression);
+            }
+
+            if (filter != null)
+            {
+                orderedQuery = orderedQuery.Where(filter);
+            }
+
+            var orderStatusTypes = await orderedQuery
+                .Skip(skip)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var orderStatusTypeDtos = _mapper.Map<IReadOnlyList<OrderStatusTypeDto>>(orderStatusTypes);
+
+            return Ok(orderStatusTypeDtos);
         }
 
 

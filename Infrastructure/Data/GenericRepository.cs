@@ -13,11 +13,11 @@ namespace Infrastructure.Data
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
-        private readonly DbSet<T> _dbSet;
+       
         public GenericRepository(StoreContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+            
         }
 
         public async Task AddAsync(T entity)
@@ -47,7 +47,7 @@ namespace Infrastructure.Data
             int? pageSize = null)
 
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _context.Set<T>();
 
             // Apply filtering
             if (filter != null)
@@ -119,6 +119,11 @@ namespace Infrastructure.Data
 
             // Save changes asynchronously
              await _context.SaveChangesAsync();
+        }
+
+        public IQueryable<T> Query()
+        {
+            return _context.Set<T>();
         }
     }
 }

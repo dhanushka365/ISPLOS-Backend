@@ -19,12 +19,10 @@ namespace Core.Entities.OrderAggregate
         public string StatusMessage { get; set; }
 
         public Guid OrderStatusTypeId { get; set; }
-
-        [ForeignKey("OrderStatusTypeId")]
         public OrderStatusType OrderStatusType { get; set; }
 
-        public Guid OrderId { get; set; }
-        public Order Order { get; set; }
+        //public Guid OrderId { get; set; }
+        //public Order Order { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 

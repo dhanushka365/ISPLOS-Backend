@@ -26,7 +26,7 @@ namespace Core.Interfaces
 
         IQueryable<T> GetAllQueryable();
 
-
+        IQueryable<T> Query();
         Task AddAsync(T entity);
 
         Task UpdateAsync(T entity);
