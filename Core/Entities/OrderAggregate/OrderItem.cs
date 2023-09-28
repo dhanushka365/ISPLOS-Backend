@@ -10,8 +10,7 @@ namespace Core.Entities.OrderAggregate
     {
         //public ProductItemOrdered ItemOrdered { get; set; }
         public decimal CurrentPrice { get; set; }
-        public int Quantity { get; set; }
-        
+        public int Quantity { get; set; }       
         public Guid OrderId { get; set; }
         public Order Order { get; set; }
         public DateTime CreatedAt { get; set; }
