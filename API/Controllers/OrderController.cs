@@ -41,13 +41,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("api-key")]
-        public IActionResult GetApiKey()
-        {
-            var apiKey = _configuration["ConnectionStrings:DefaultConnection"];
-            return Ok(apiKey);
-        }
-
+  
 
         [HttpGet("Orders")]
         public async Task<ActionResult<IReadOnlyList<Order>>> GetOrders(

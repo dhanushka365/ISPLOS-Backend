@@ -35,12 +35,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("api-key")]
-        public IActionResult GetApiKey()
-        {
-            var apiKey = _configuration["ConnectionStrings:DefaultConnection"];
-            return Ok(apiKey);
-        }
+        //[HttpGet("api-key")]
+        //public IActionResult GetApiKey()
+        //{
+        //    var apiKey = _configuration["ConnectionStrings:DefaultConnection"];
+        //    return Ok(apiKey);
+        //}
 
     //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
