@@ -10,8 +10,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Mappers;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Month)//log files comes here
+    .MinimumLevel.Information()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add additional prduction appsettings.json files
 //please set the correct appsettings.json file for your environment
@@ -114,8 +124,7 @@ app.MapControllers();
 using var scoped = app.Services.CreateScope();
 var services = scoped.ServiceProvider;
 var context = services.GetRequiredService<StoreContext>();
-var logger = services.GetRequiredService<ILogger<Program>>();
-try
+
 {
     await context.Database.MigrateAsync();
     
@@ -123,6 +132,7 @@ try
 catch (Exception ex)
 {
     logger.LogError(ex, "An error occurred during migration");
+
 }
 
 app.Run();
