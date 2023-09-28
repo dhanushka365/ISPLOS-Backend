@@ -1,6 +1,7 @@
 ﻿using Core.Entities.OrderAggregate;
 using Core.Entities;
 using System.ComponentModel.DataAnnotations;
+using Core.Entities.Identity;
 
 namespace API.Dtos
 {
@@ -9,52 +10,27 @@ namespace API.Dtos
         [Required]
         public Guid Id { get; set; }
 
-        //[Required]
-        //public string BuyerEmail { get; set; }
-
-        //[Required]
-        //public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
-
-        //[Required]
-        //public DeliveryMethod DeliveryMethod { get; set; }
-
-        //[Required]
-        //public IReadOnlyList<OrderItem> OrderItems { get; set; }
-
-        //[Required]
-        //public decimal Subtotal { get; set; }
-
-        //[Required]
-        //public OrderStatus Status { get; set; }//unpaid , paid , shipped , delivered , cancelled
-
-        //[Required]
-        //public string PaymentIntentId { get; set; }
-
-        //[Required]
-        //public ICollection<Payment> Payments { get; set; } // Add a collection of payments associated with this order
+        [Required]
+        public Guid DeliveryMethodId { get; set; }//used
+        [Required]
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
 
         [Required]
-        public string BuyerEmail { get; set; }
+        public DeliveryMethod DeliveryMethod { get; set; }//used
+        [Required]
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
 
         [Required]
-        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
+        public User User { get; set; }
 
         [Required]
-        public string DeliveryMethod { get; set; }
 
-        [Required]
-        public string OrderItems { get; set; }
+        public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
-        [Required]
-        public decimal Subtotal { get; set; }
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
 
-        [Required]
-        public string Status { get; set; }
-
-        [Required]
-        public string PaymentIntentId { get; set; }
-
-        [Required]
-        public string Payments { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Entities.OrderAggregate;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core.Entities.OrderAggregate
+namespace API.Dtos
 {
-    public class OrderStatus :BaseEntity
+    public class OrderStatusDto
     {
-      
+        [Required]
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
         public string Status { get; set; }
@@ -20,14 +18,7 @@ namespace Core.Entities.OrderAggregate
 
         public Guid OrderStatusTypeId { get; set; }
 
-        [ForeignKey("OrderStatusTypeId")]
-        public OrderStatusType OrderStatusType { get; set; }
-
-        public Guid OrderId { get; set; }
-        public Order Order { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-
     }
 }

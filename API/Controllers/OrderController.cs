@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -19,11 +20,12 @@ namespace API.Controllers
         private readonly IGenericRepository<OrderItem> _orderItemsRepo;
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
+
         private readonly ILogger<OrderController> _logger;
 
-        public OrderController( IConfiguration configuration, IGenericRepository<Order> ordersRepo,
+        public OrderController(IConfiguration configuration, IGenericRepository<Order> ordersRepo,
             IGenericRepository<OrderItem> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo,
-            IMapper mapper, ILogger<OrderController> logger)
+            IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo)
         {
             _configuration = configuration;
             _ordersRepo = ordersRepo;
@@ -31,7 +33,7 @@ namespace API.Controllers
             _dmRepo = dmRepo;
             _mapper = mapper;
             _logger = logger;
-
+            _orderStatusRepo = orderStatusRepo;
         }
 
         [HttpGet("api-key")]
@@ -41,90 +43,131 @@ namespace API.Controllers
             return Ok(apiKey);
         }
 
-        //[HttpGet("Orders")]
-        //public async Task<ActionResult<IReadOnlyList<Order>>> GetOrderBrands(
-        //                [FromQuery] string search = null,
-        //                [FromQuery] int page = 1,
-        //                [FromQuery] int pageSize = 10)
-        //{
 
-        //    Expression<Func<Order, bool>> filter = null;
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-        //        filter = order => order.BuyerEmail.Contains(search, StringComparison.OrdinalIgnoreCase);
-        //    }
-        //    int skip = (page - 1) * pageSize;
-
-        //    var orders = await _ordersRepo.ListAllAsync(
-        //        filter: filter,
-        //        orderBy: null,
-        //        pageNumber: page,
-        //        pageSize: pageSize);
-
-        //    return Ok(orders);
-
-        //}
-
-
-        [HttpGet("DeliveryMethods")]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        [HttpGet("Orders")]
+        public async Task<ActionResult<IReadOnlyList<Order>>> GetOrders(
+            [FromQuery] string search = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var deliveryMethods = await _dmRepo.ListAllAsync();
-            return Ok(deliveryMethods);
+            Expression<Func<Order, bool>> filter = null;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+
+                filter = order => order.User.UserName.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
+
+            int skip = (page - 1) * pageSize;
+
+            var orders = await _ordersRepo.ListAllAsync(
+                filter: filter,
+                orderBy: null,
+                pageNumber: page,
+                pageSize: pageSize);
+
+            return Ok(orders);
         }
+
+        [HttpPost("order")]
+        public async Task<ActionResult> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
+        {
+            try
+            {
+                
+                var order = _mapper.Map<Order>(requestOrderDto);
+                order.Id = Guid.NewGuid();
+
+                if (order == null)
+                {
+                    return NotFound(); // Return a 404 Not Found response
+                }
+
+                await _ordersRepo.AddAsync(order);
+
+ 
+                await _ordersRepo.SaveAsync();
+
+                var createdOrderDto = _mapper.Map<OrderDto>(order);
+
+                _logger.LogInformation("Order created and saved successfully.");
+
+                return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, createdOrderDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating and saving the order.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("orderStatus")]
+        public async Task<IActionResult> CreateOrderStatus([FromBody] RequestOrderStatusDto requestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var orderStatus = _mapper.Map<OrderStatus>(requestDto);
+
+            await _orderStatusRepo.AddAsync(orderStatus);
+            await _orderStatusRepo.SaveAsync();
+
+            var orderStatusDto = _mapper.Map<OrderStatusDto>(orderStatus);
+
+            return CreatedAtAction(nameof(GetOrderStatus), new { id = orderStatus.Id }, orderStatusDto);
+        }
+
+
 
         [HttpGet("OrderStatus")]
-        public async Task<ActionResult<IReadOnlyList<OrderStatus>>> GetOrderStatus()
+        public async Task<ActionResult<IReadOnlyList<OrderStatusDto>>> GetOrderStatus(
+           [FromQuery] string search = null,
+           [FromQuery] int page = 1,
+           [FromQuery] int pageSize = 10)
         {
-            var orderStatus = await _orderStatusRepo.ListAllAsync();
-            return Ok(orderStatus);
+            Expression<Func<OrderStatus, bool>> filter = null;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                
+                filter = orderStatus => orderStatus.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
+            }
+
+            int skip = (page - 1) * pageSize;
+
+            
+            var orderStatuses = await _orderStatusRepo.ListAllAsync(
+                filter: filter,
+                orderBy: null,  // Add sorting logic here if needed
+                pageNumber: page,
+                pageSize: pageSize);
+
+            
+            var orderStatusDtos = _mapper.Map<IReadOnlyList<OrderStatusDto>>(orderStatuses);
+
+            return Ok(orderStatusDtos);
         }
 
-        [HttpGet("OrderItems")]
-        public async Task<ActionResult<IReadOnlyList<OrderItem>>> GetOrderItems()
+        [HttpGet("OrderStatus/{id:Guid}")]
+        public async Task<ActionResult<OrderStatusDto>> GetOrderStatus([FromRoute] Guid id)
         {
-            var orderItems = await _orderItemsRepo.ListAllAsync();
-            return Ok(orderItems);
+            
+            var orderStatus = await _orderStatusRepo.GetByIdAsync(x => x.Id == id);
+
+            if (orderStatus == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+            var orderStatusDto = _mapper.Map<OrderStatusDto>(orderStatus);
+
+            return Ok(orderStatusDto); 
         }
-
-
-        [HttpGet("OrderItems/{id}")]
-        public async Task<ActionResult<IReadOnlyList<OrderItem>>> GetOrderItems(Guid id)
-        {
-            var orderItems = await _orderItemsRepo.ListAllAsync();
-            return Ok(orderItems);
-        }
-
-        
-
-        //[HttpPut("UpdateOrder/{id}")]
-        //public async Task<IActionResult> UpdateOrder([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid id)
-        //{
-        //    try
-        //    {
-        //        var OrderDomain = _mapper.Map<Order>(requestOrderDto);
-        //        var OrderID = Guid.NewGuid();
-        //        OrderDomain.Id = OrderID;
-        //        if (OrderDomain == null)
-        //        {
-        //            NotFound();
-        //        }
-        //        await _ordersRepo.UpdateAsync(OrderDomain);
-        //        await _ordersRepo.SaveAsync();
-        //        var savedOrderBrandDto = _mapper.Map<RequestOrderDto>(OrderDomain);
-        //        _logger.LogInformation("Order updated and saved successfully.");
-        //        return CreatedAtAction(nameof(GetOrderBrands), new { id = OrderDomain.Id }, savedOrderBrandDto);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        _logger.LogError(ex, "Error occurred while updating the Order.");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-
-
 
 
     }
+
 }
+

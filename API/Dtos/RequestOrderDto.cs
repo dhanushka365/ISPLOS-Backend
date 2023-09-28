@@ -1,31 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities.Identity;
+using Core.Entities.OrderAggregate;
+using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Dtos
 {
     public class RequestOrderDto
     {
         [Required]
-        public string BuyerEmail { get; set; }
+        public Guid DeliveryMethodId { get; set; }//used
+        [Required]
+        public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;//used
 
         [Required]
-        public string OrderDate { get; set; }
+        public DeliveryMethod DeliveryMethod { get; set; }//used
+        [Required]
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();//used
 
         [Required]
-        public string DeliveryMethod { get; set; }
 
-        [Required]
-        public string OrderItems { get; set; }
+        public ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
-        [Required]
-        public decimal Subtotal { get; set; }
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
 
-        [Required]
-        public string Status { get; set; }
-
-        [Required]
-        public string PaymentIntentId { get; set; }
-
-        [Required]
-        public string Payments { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }
