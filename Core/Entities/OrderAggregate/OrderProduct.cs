@@ -14,7 +14,7 @@ namespace Core.Entities.OrderAggregate
         public Guid OrderId { get; set; }
         public Order Order { get; set; }
 
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; set; }//newly added
         public Product Product { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
