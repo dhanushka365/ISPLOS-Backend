@@ -19,7 +19,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IGenericRepository<Order> _ordersRepo;
-        private readonly IGenericRepository<OrderItem> _orderItemsRepo;
+        private readonly IGenericRepository<OrderProduct> _orderItemsRepo;
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
         private readonly IGenericRepository<OrderStatusType> _orderStatusTypeRepo;
@@ -27,7 +27,7 @@ namespace API.Controllers
         private readonly ILogger<OrderController> _logger;
 
         public OrderController(IConfiguration configuration, IGenericRepository<Order> ordersRepo,
-            IGenericRepository<OrderItem> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo,
+            IGenericRepository<OrderProduct> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo,
             IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo, IGenericRepository<OrderStatusType> orderStatusTypeRepo)
         {
             _configuration = configuration;

@@ -19,7 +19,7 @@ namespace Infrastructure.Data
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderProduct> OrderItems { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
@@ -46,7 +46,7 @@ namespace Infrastructure.Data
                 .HasForeignKey(oi => oi.OrderId);
 
       
-            modelBuilder.Entity<OrderItem>()
+            modelBuilder.Entity<OrderProduct>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId);
