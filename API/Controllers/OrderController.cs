@@ -171,6 +171,125 @@ namespace API.Controllers
             return Ok(orderStatusDtos);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrder([FromBody] OrderDto orderDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var order = await _ordersRepo.GetByIdAsync(x => x.Id == orderDto.Id);
+
+            if (order == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+            _mapper.Map(orderDto, order);
+
+            await _ordersRepo.UpdateAsync(order);
+            await _ordersRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("OrderStatus")]
+        public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderStatusDto orderStatusDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var orderStatus = await _orderStatusRepo.GetByIdAsync(x => x.Id == orderStatusDto.Id);
+
+            if (orderStatus == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+            _mapper.Map(orderStatusDto, orderStatus);
+
+            await _orderStatusRepo.UpdateAsync(orderStatus);
+            await _orderStatusRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut("OrderStatusType")]
+        public async Task<IActionResult> UpdateOrderStatusType([FromBody] OrderStatusTypeDto orderStatusTypeDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var orderStatusType = await _orderStatusTypeRepo.GetByIdAsync(x => x.Id == orderStatusTypeDto.Id);
+
+            if (orderStatusType == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+            _mapper.Map(orderStatusTypeDto, orderStatusType);
+
+            await _orderStatusTypeRepo.UpdateAsync(orderStatusType);
+            await _orderStatusTypeRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> DeleteOrder([FromRoute] Guid id)
+        {
+            var order = await _ordersRepo.GetByIdAsync(x => x.Id == id);
+
+            if (order == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+             _ordersRepo.Delete(order);
+            await _ordersRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("OrderStatus/{id:Guid}")]
+        public async Task<IActionResult> DeleteOrderStatus([FromRoute] Guid id)
+        {
+            var orderStatus = await _orderStatusRepo.GetByIdAsync(x => x.Id == id);
+
+            if (orderStatus == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+             _orderStatusRepo.Delete(orderStatus);
+            await _orderStatusRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("OrderStatusType/{id:Guid}")]
+        public async Task<IActionResult> DeleteOrderStatusType([FromRoute] Guid id)
+        {
+            var orderStatusType = await _orderStatusTypeRepo.GetByIdAsync(x => x.Id == id);
+
+            if (orderStatusType == null)
+            {
+                return NotFound(); // Return a 404 Not Found response
+            }
+
+            _orderStatusTypeRepo.Delete(orderStatusType);
+            await _orderStatusTypeRepo.SaveAsync();
+
+            return NoContent();
+        }
+
+
+
 
 
         [HttpGet("OrderStatus/{id:Guid}")]
