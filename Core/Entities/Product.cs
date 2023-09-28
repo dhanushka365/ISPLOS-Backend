@@ -19,14 +19,14 @@ namespace Core.Entities
         public string PictureUrl { get; set; }
 
 
-        public Guid ProductTypeId { get; set; }
-        public ProductType ProductType { get; set; }
+        //public Guid ProductTypeId { get; set; }
+        //public ProductType ProductType { get; set; }
 
 
-        public Guid ProductBrandId { get; set; }
-        public ProductBrand ProductBrand { get; set; }
+        //public Guid ProductBrandId { get; set; }
+        //public ProductBrand ProductBrand { get; set; }
 
-        public IList<OrderProduct> OrderProducts { get; set; } //used
+        public IList<OrderProduct> OrderProducts { get; set; } 
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

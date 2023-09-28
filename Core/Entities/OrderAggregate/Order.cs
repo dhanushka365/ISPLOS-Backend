@@ -16,21 +16,20 @@ namespace Core.Entities.OrderAggregate
 
         public DateTime OrderDate { get; set; } 
 
-
-        public Guid DeliveryMethodId { get; set; }//used
-        public DeliveryMethod DeliveryMethod { get; set; }//used
-
-
         [Required]
         public Guid UserID { get; set; }
         public User User { get; set; }
 
 
+        public bool IsPaid { get; set; } = false;
 
-        [Required]
-        public Guid OrderStatusId { get; set; }
-        public OrderStatus OrderStatus { get; set; }
 
+        // [Required]
+        //  public Guid OrderStatusId { get; set; }
+        //  public OrderStatus OrderStatus { get; set; }
+
+        //  public Guid DeliveryMethodId { get; set; }//used
+        //  public DeliveryMethod DeliveryMethod { get; set; }//used
 
 
         public IList<OrderProduct> OrderProducts { get; set; } //used
