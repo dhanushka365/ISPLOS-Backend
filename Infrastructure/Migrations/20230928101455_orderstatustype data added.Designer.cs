@@ -13,7 +13,9 @@ namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
     [Migration("20230928101455_orderstatustype data added")]
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     partial class orderstatustypedataadded
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
