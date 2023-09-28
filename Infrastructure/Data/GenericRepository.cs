@@ -1,5 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,12 +10,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Infrastructure.Data
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
-       
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IWebHostEnvironment webHostEnvironment;
+
+
         public GenericRepository(StoreContext context)
         {
             _context = context;
@@ -124,6 +130,22 @@ namespace Infrastructure.Data
         public IQueryable<T> Query()
         {
             return _context.Set<T>();
+        }
+
+
+        public async Task<Image> UploadImage(Image Image)
+        {
+          
+            string uniqueFileName = $"{Image.FileName}{Image.FileExtension}";
+            var localFilePath = Path.Combine(webHostEnvironment.ContentRootPath, "Images", uniqueFileName);
+            using var stream = new FileStream(localFilePath, FileMode.Create);
+            await Image.File.CopyToAsync(stream);
+            var urlFilePath = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}{httpContextAccessor.HttpContext.Request.PathBase}/Images/{uniqueFileName}";
+            Image.FilePath = urlFilePath;
+            await _context.Set<Image>().AddAsync(Image);
+            await _context.SaveChangesAsync();
+            return Image;
+
         }
     }
 }
