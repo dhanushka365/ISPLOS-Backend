@@ -1,8 +1,8 @@
 ﻿using API.Dtos;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
-using Core.Entities;
 using Core.Entities.Identity;
+using Core.Entities.ProductAggregate;
 
 namespace API.Mappers
 {

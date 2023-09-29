@@ -1,6 +1,6 @@
-namespace Core.Tests
+namespace Core.Tests.Interfaces
 {
-    public class UnitTest1
+    public class IGenericRepositoryTests
     {
         [Fact]
         public void Test1()

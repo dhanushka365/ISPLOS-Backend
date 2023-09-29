@@ -2,6 +2,7 @@
 using AutoMapper;
 using Core.Entities;
 using Core.Entities.Identity;
+using Core.Entities.ProductAggregate;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
