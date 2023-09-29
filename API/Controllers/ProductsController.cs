@@ -18,36 +18,23 @@ namespace API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IGenericRepository<Product> _productsRepo;
-
-      //  private readonly IGenericRepository<ProductType> _productTypeRepo;
-      //  private readonly IGenericRepository<ProductBrand> _productBrandRepo;
-        private readonly IGenericRepository<Image> _imageRepository;
-
-      //  private readonly IGenericRepository<ProductType> _productTypeRepo;
-      //  private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+      //  private readonly IGenericRepository<Product> _productsRepo;
+      //  private readonly IGenericRepository<Image> _imageRepository;
 
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IProductRepository _productsRepo;
 
-        public ProductsController(IConfiguration configuration, IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger, IGenericRepository<Image> imageRepository)
+        public ProductsController(IConfiguration configuration,
+          IMapper mapper, ILogger<ProductsController> logger,IProductRepository productsRepo)
         {
             _configuration = configuration;
-            _productsRepo = productsRepo;
-           // _productTypeRepo = productTypeRepo;
-           // _productBrandRepo = productBrandRepo;
             _logger = logger;
+            _productsRepo = productsRepo;
             _mapper = mapper;
-            _imageRepository = imageRepository;
+          //  _imageRepository = imageRepository;
         }
 
-        //[HttpGet("api-key")]
-        //public IActionResult GetApiKey()
-        //{
-        //    var apiKey = _configuration["ConnectionStrings:DefaultConnection"];
-        //    return Ok(apiKey);
-        //}
 
         //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
@@ -64,7 +51,9 @@ namespace API.Controllers
                     Name = p.Name,
                     Price = p.Price,
                     Description = p.Description,
-                    PictureUrl = p.PictureUrl
+                    PictureUrl = p.PictureUrl,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -75,13 +64,11 @@ namespace API.Controllers
         //-------------------------------------------------------------------------------------------------------------------------------
 
         [HttpGet]
-        [Route("id:Guid")]
+        [Route("{id:Guid}")]
         public async Task<ActionResult<Product>> GetProduct([FromRoute] Guid id)
         {
 
-            var product = await _productsRepo
-                .GetAllQueryable()
-                .FirstOrDefaultAsync(product => product.Id == id);
+            var product = await _productsRepo.GetByIdAsync(product => product.Id == id);
 
             if (product == null)
             {
@@ -180,7 +167,7 @@ namespace API.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateProduct(Guid id, Product product)
+        public async Task<ActionResult> UpdateProduct(Guid id, RequestProductDto product)
         {
             var ProductDomain = await _productsRepo.GetByIdAsync(product => product.Id == id);
 
@@ -393,8 +380,8 @@ namespace API.Controllers
                     FileDescription = request.FileDescription,
                 };
 
-                var uploadedImage = await _imageRepository.UploadImage(imageEntity);
-                product.PictureUrl = uploadedImage.FilePath;
+              //  var uploadedImage = await _imageRepository.UploadImage(imageEntity);
+              //  product.PictureUrl = uploadedImage.FilePath;
                 await _productsRepo.UpdateAsync(product);
 
                 return Ok("Image uploaded successfully");

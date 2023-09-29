@@ -10,10 +10,10 @@ using Core.Interfaces;
 
 namespace Infrastructure.Data
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly StoreContext _context;
-        public ProductRepository( StoreContext storeContext)
+        public ProductRepository( StoreContext storeContext) : base( storeContext ) 
         {
             _context = storeContext;
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
         Task<Product> GetProductByIdAsync(Guid id);
         Task<IReadOnlyList<Product>> GetProductsAsync();

@@ -31,35 +31,42 @@ namespace API.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] RequestLoginDTO requestLoginDTO)
         {
-            var user  =await  userManager.FindByEmailAsync(requestLoginDTO.Email);
-            if (user != null)
+            try
             {
-                var check = await userManager.CheckPasswordAsync(user, requestLoginDTO.Password);
-                if (check)
+                var user = await userManager.FindByEmailAsync(requestLoginDTO.Email);
+                if (user != null)
                 {
-
-                    var role = await roleRepository.GetByIdAsync(x => x.Id == user.RoleId);
-                    if (role != null)
+                    var check = await userManager.CheckPasswordAsync(user, requestLoginDTO.Password);
+                    if (check)
                     {
-                        var AccessToken = tokenRepository.CreateJWTToken(user, role, int.Parse(configuration["Token:Access"]));
-                        var RefreshToken = tokenRepository.CreateJWTToken(user, role, int.Parse(configuration["Token:Refresh"]));
-                        var userDTO = mapper.Map<UserDTO>(user);
 
-                        var response = new TokenDTO
+                        var role = await roleRepository.GetByIdAsync(x => x.Id == user.RoleId);
+                        if (role != null)
                         {
-                            AccessToken = AccessToken,
-                            RefreshToken = RefreshToken,
-                            User = userDTO
-                        };
+                            var AccessToken = tokenRepository.CreateJWTToken(user, role, int.Parse(configuration["Token:Access"]));
+                            var RefreshToken = tokenRepository.CreateJWTToken(user, role, int.Parse(configuration["Token:Refresh"]));
+                            var userDTO = mapper.Map<UserDTO>(user);
 
-                      return Ok(response);
+                            var response = new TokenDTO
+                            {
+                                AccessToken = AccessToken,
+                                RefreshToken = RefreshToken,
+                                User = userDTO
+                            };
+
+                            return Ok(response);
+                        }
                     }
+
                 }
-               
+
+
+                return BadRequest("Incorrect Username or Password");
             }
-
-
-            return BadRequest("Incorrect Username or Password");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 

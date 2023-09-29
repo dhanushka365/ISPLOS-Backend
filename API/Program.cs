@@ -36,8 +36,9 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IOrderProductRepository,OrderProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 //Add Generic Repository as service
-builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+//builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
 builder.Services.AddDbContext<StoreContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

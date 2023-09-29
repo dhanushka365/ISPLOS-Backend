@@ -18,7 +18,7 @@ namespace Infrastructure.Data
         private readonly StoreContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private StoreContext context;
+      //  private readonly StoreContext context;
 
         public GenericRepository(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, StoreContext context)
         {
@@ -30,7 +30,7 @@ namespace Infrastructure.Data
 
         public GenericRepository(StoreContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public async Task AddAsync(T entity)
@@ -98,7 +98,7 @@ namespace Infrastructure.Data
 
         public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _context.Set<T>().FirstOrDefaultAsync(predicate);
+            return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
         }
 
         public Task<T> FilterObject(Expression<Func<T, bool>> predicate)
