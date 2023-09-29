@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Core.Interfaces
 
         void Delete(T entity);
 
-        Task<Image> UploadImage(Image Image);
+        Task<Image> UploadImage(Image image);
 
     }
 }

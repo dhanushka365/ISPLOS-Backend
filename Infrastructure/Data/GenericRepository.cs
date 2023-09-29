@@ -16,14 +16,21 @@ namespace Infrastructure.Data
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private StoreContext context;
 
+        public GenericRepository(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, StoreContext context)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _webHostEnvironment = webHostEnvironment;
+            
+        }
 
         public GenericRepository(StoreContext context)
         {
-            _context = context;
-            
+            this.context = context;
         }
 
         public async Task AddAsync(T entity)
@@ -133,18 +140,17 @@ namespace Infrastructure.Data
         }
 
 
-        public async Task<Image> UploadImage(Image Image)
+        public async Task<Image> UploadImage(Image image)
         {
-          
-            string uniqueFileName = $"{Image.FileName}{Image.FileExtension}";
-            var localFilePath = Path.Combine(webHostEnvironment.ContentRootPath, "Images", uniqueFileName);
+
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images",$"{image.FileName}{image.FileExtension}");
             using var stream = new FileStream(localFilePath, FileMode.Create);
-            await Image.File.CopyToAsync(stream);
-            var urlFilePath = $"{httpContextAccessor.HttpContext.Request.Scheme}://{httpContextAccessor.HttpContext.Request.Host}{httpContextAccessor.HttpContext.Request.PathBase}/Images/{uniqueFileName}";
-            Image.FilePath = urlFilePath;
-            await _context.Set<Image>().AddAsync(Image);
+            await image.File.CopyToAsync(stream);
+            var urlFilePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{image.FileName}{image.FileExtension}";
+            image.FilePath = urlFilePath;
+            await _context.Set<Image>().AddAsync(image);
             await _context.SaveChangesAsync();
-            return Image;
+            return image;
 
         }
     }

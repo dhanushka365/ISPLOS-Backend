@@ -21,11 +21,12 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+        private readonly IGenericRepository<Image> _imageRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(IConfiguration configuration, IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger)
+            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger, IGenericRepository<Image> imageRepository)
         {
             _configuration = configuration;
             _productsRepo = productsRepo;
@@ -33,6 +34,7 @@ namespace API.Controllers
             _productBrandRepo = productBrandRepo;
             _logger = logger;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         //[HttpGet("api-key")]
@@ -42,14 +44,14 @@ namespace API.Controllers
         //    return Ok(apiKey);
         //}
 
-    //-------------------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            
+
             var queryableProducts = _productsRepo.GetAllQueryable();
 
-            
+
             var products = await queryableProducts
                 .Include(p => p.ProductType)
                 .Include(p => p.ProductBrand)
@@ -60,10 +62,11 @@ namespace API.Controllers
                     Price = p.Price,
                     Description = p.Description,
                     PictureUrl = p.PictureUrl,
-                    ProductBrandId=p.ProductBrandId,
-                    ProductTypeId=p.ProductTypeId,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductTypeId = p.ProductTypeId,
                     ProductTypeName = p.ProductType.Name,
                     ProductBrandName = p.ProductBrand.Name
+
                 })
                 .ToListAsync();
 
@@ -71,7 +74,7 @@ namespace API.Controllers
 
         }
 
-     //-------------------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------------------
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(Guid id)
@@ -85,10 +88,10 @@ namespace API.Controllers
 
             if (product == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-           
+
             var productToReturn = new ProductToReturnDto
             {
                 Id = product.Id,
@@ -96,36 +99,36 @@ namespace API.Controllers
                 Description = product.Description,
                 Price = product.Price,
                 PictureUrl = product.PictureUrl,
-                ProductTypeId = product.ProductTypeId ,
+                ProductTypeId = product.ProductTypeId,
                 ProductBrandId = product.ProductBrandId,
                 ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
                 ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
             };
 
-            return Ok(productToReturn); 
+            return Ok(productToReturn);
         }
 
 
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands(
-              [FromQuery] string search = null, 
-              [FromQuery] int page = 1,         
+              [FromQuery] string search = null,
+              [FromQuery] int page = 1,
               [FromQuery] int pageSize = 10)
         {
-            
+
             Expression<Func<ProductBrand, bool>> filter = null;
             if (!string.IsNullOrEmpty(search))
             {
                 filter = brand => brand.Name.Contains(search, StringComparison.OrdinalIgnoreCase);
             }
 
-           
+
             int skip = (page - 1) * pageSize;
 
-            
+
             var brands = await _productBrandRepo.ListAllAsync(
                 filter: filter,
-                orderBy: null, 
+                orderBy: null,
                 pageNumber: page,
                 pageSize: pageSize);
 
@@ -175,7 +178,7 @@ namespace API.Controllers
 
             await _productBrandRepo.SaveAsync();
 
-            return Ok(); 
+            return Ok();
         }
 
         [HttpPut("{id}")]
@@ -201,7 +204,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-       
+
 
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -286,7 +289,7 @@ namespace API.Controllers
             }
         }
 
-     //---------------------------------------------------------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------------------------------------------------
 
         [HttpDelete("brand/{id}")]
         public async Task<ActionResult> DeleteProductBrand(Guid id)
@@ -313,7 +316,7 @@ namespace API.Controllers
         }
 
 
-     
+
 
 
         [HttpDelete("type/{id}")]
@@ -365,10 +368,81 @@ namespace API.Controllers
         }
 
 
+        [HttpPatch]
+        [Route("Upload/{productId}")]
+        public async Task<ActionResult> UploadProductImage(Guid productId, [FromForm] ImageUploadRequestDto request)
+        {
+            var product = await _productsRepo.GetByIdAsync(p => p.Id == productId);
+            if (product == null)
+            {
+                return NotFound("Product not found");
+            }
+            ValidateFileUpload(request);
+
+
+            if (!ModelState.IsValid)
+            {
+                // If validation fails, return a bad request response with validation errors
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                // Create an Image entity for the uploaded image
+                var imageEntity = new Image
+                {
+                    File = request.File,
+                    FileName = request.FileName,
+                    FileExtension = Path.GetExtension(request.FileName),
+                    FileSizeInBytes = request.File.Length,
+                    FileDescription = request.FileDescription,
+                };
+
+                // Upload the image and update the Image entity's FilePath
+                var uploadedImage = await _imageRepository.UploadImage(imageEntity);
+
+                // Update the product's PictureUrl with the uploaded image's FilePath
+                product.PictureUrl = uploadedImage.FilePath;
+                await _productsRepo.UpdateAsync(product);
+
+                return Ok("Image uploaded successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+
+        }
+
+    
+
+        private void ValidateFileUpload(ImageUploadRequestDto request)
+        {
+            var alloweExtentions = new string[] { ".jpg", ".jpeg", ".png" };
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            if (!alloweExtentions.Contains(Path.GetExtension(path: request.File.FileName)))
+            {
+                ModelState.AddModelError("file", "Unsupported file type");
+            }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+            if (request.File.Length > 10485760)
+            {
+                ModelState.AddModelError("file", "please upload file size more than 10mb");
+            }
+
+        }
+
+
+
+
+
+
+
     }
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-    
 }

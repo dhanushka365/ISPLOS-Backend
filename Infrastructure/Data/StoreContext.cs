@@ -26,8 +26,7 @@ namespace Infrastructure.Data
         public DbSet<OrderStatus> OrderStatuses { get; set; }
 
         public DbSet<OrderStatusType> OrderStatuseTypes { get; set; }
-
-
+        public DbSet<Image> Images { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

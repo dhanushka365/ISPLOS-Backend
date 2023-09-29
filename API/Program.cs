@@ -23,7 +23,7 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     //.AddJsonFile("appsettings.production.json", optional: true);
     .AddJsonFile("appsettings.Development.json", optional: true);
-    //.AddJsonFile("appsettings.production.json", optional: true);
+    //.AddJsonFile("appsettings.QA.json", optional: true);
 
 // Add services to the container.
 

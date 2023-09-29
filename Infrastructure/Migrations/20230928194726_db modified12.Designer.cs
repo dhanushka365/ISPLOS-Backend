@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20230928194726_db modified12")]
+    partial class dbmodified12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,38 +139,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Core.Entities.Image", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FileDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileExtension")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("FileSizeInBytes")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.DeliveryMethod", b =>
@@ -305,146 +276,146 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b124bc32-2f69-4c48-8618-3a42af401be1"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5014),
+                            Id = new Guid("c4e37d48-7c67-46b4-b7c8-ce3428bb3fae"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5735),
                             Name = "Order Progression-1",
-                            OrderStatusTypeId = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
+                            OrderStatusTypeId = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
                             Status = "Pending",
                             StatusCode = "101",
                             StatusMessage = "Order is pending",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5014)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5736)
                         },
                         new
                         {
-                            Id = new Guid("2cab5edd-ee72-499a-9af8-0e8911d9a833"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5024),
+                            Id = new Guid("35419ce8-1571-428a-aff6-04951dbc5dc5"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5739),
                             Name = "Order Progression-2",
-                            OrderStatusTypeId = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
+                            OrderStatusTypeId = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
                             Status = "Processing",
                             StatusCode = "102",
                             StatusMessage = "Order is processing",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5024)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5740)
                         },
                         new
                         {
-                            Id = new Guid("2535209f-bdf3-4034-9546-a72aa1280a59"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5026),
+                            Id = new Guid("28149072-36ef-435b-9a96-80d448777bac"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5750),
                             Name = "Order Progression-3",
-                            OrderStatusTypeId = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
+                            OrderStatusTypeId = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
                             Status = "Shipped",
                             StatusCode = "103",
                             StatusMessage = "Order is shipped",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5027)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5751)
                         },
                         new
                         {
-                            Id = new Guid("9237f40c-bb10-45c9-b160-191c2fd08eea"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5029),
+                            Id = new Guid("23d4e861-b71b-4de0-96d0-502c31cab6fc"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5753),
                             Name = "Order Progression-4",
-                            OrderStatusTypeId = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
+                            OrderStatusTypeId = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
                             Status = "Delivered",
                             StatusCode = "104",
                             StatusMessage = "Order is delivered",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5029)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5754)
                         },
                         new
                         {
-                            Id = new Guid("59e43a17-4bb9-4299-9227-4219752cd559"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5031),
+                            Id = new Guid("6ff177e3-8aea-4d80-9ab3-ee88d37794ed"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5756),
                             Name = "Order Progression-5",
-                            OrderStatusTypeId = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
+                            OrderStatusTypeId = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
                             Status = "Cancelled",
                             StatusCode = "105",
                             StatusMessage = "Order is cancelled",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5031)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5756)
                         },
                         new
                         {
-                            Id = new Guid("0c93f5ef-b503-48d6-b23d-ae9b7a38a593"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5034),
+                            Id = new Guid("7d867b79-437b-40bb-945c-5e6799890e91"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5760),
                             Name = "Financial Transaction-1",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "Pending",
                             StatusCode = "201",
                             StatusMessage = "Financial transaction is pending",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5034)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5760)
                         },
                         new
                         {
-                            Id = new Guid("e087db20-9de9-4123-b298-44d7ad4dd9c0"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5036),
+                            Id = new Guid("c69edb1c-e687-4000-b809-30af669c280b"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5762),
                             Name = "Financial Transaction-2",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "Processing",
                             StatusCode = "202",
                             StatusMessage = "Financial transaction is processing",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5037)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5763)
                         },
                         new
                         {
-                            Id = new Guid("c320c184-6468-4274-982d-50975aef5493"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5038),
+                            Id = new Guid("de3ccbfb-a136-4898-a1f7-5ec605107e1c"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5765),
                             Name = "Financial Transaction-3",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "Completed",
                             StatusCode = "203",
                             StatusMessage = "Financial transaction is completed",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5039)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5765)
                         },
                         new
                         {
-                            Id = new Guid("f0ef2e64-e836-46f9-b5bc-dd39e19c9fe8"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5041),
+                            Id = new Guid("249b06a6-d956-435a-aeeb-844364dd9c31"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5767),
                             Name = "Financial Transaction-4",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "Cancelled",
                             StatusCode = "204",
                             StatusMessage = "Financial transaction is cancelled",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5042)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5768)
                         },
                         new
                         {
-                            Id = new Guid("f1985903-8953-4a3b-847f-e37300d8c7d2"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5045),
+                            Id = new Guid("bff26263-e090-4e69-92e8-d67fff5c4efc"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5771),
                             Name = "Authorization and Pay Mod-1",
-                            OrderStatusTypeId = new Guid("9552c944-c401-4879-99f3-18496844bbc9"),
+                            OrderStatusTypeId = new Guid("bc1c06e4-6fdd-439d-a1de-28d610405a10"),
                             Status = "Verified",
                             StatusCode = "301",
                             StatusMessage = "Payment method verified",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5046)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5771)
                         },
                         new
                         {
-                            Id = new Guid("de44c81b-6e66-412a-9731-5e5c7a207680"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5048),
+                            Id = new Guid("3b885553-22ee-416f-b8e1-178fee465ac6"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5775),
                             Name = "Payment Status-1",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "Paid",
                             StatusCode = "401",
                             StatusMessage = "Order Paid",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5048)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5775)
                         },
                         new
                         {
-                            Id = new Guid("b6a5014c-7475-4bcb-8f37-9568be9e2240"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5050),
+                            Id = new Guid("e3f873ad-cfb7-4370-abd4-7adf0e086bad"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5777),
                             Name = "Payment Status-2",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "partially Paid",
                             StatusCode = "402",
                             StatusMessage = "Order Partially Paid",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5050)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5777)
                         },
                         new
                         {
-                            Id = new Guid("f4f238b8-5212-4c65-8ea3-62488a703464"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5052),
+                            Id = new Guid("4463badf-c302-467e-b169-d0955e766c40"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5779),
                             Name = "Payment Status-3",
-                            OrderStatusTypeId = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
+                            OrderStatusTypeId = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
                             Status = "unPaid",
                             StatusCode = "403",
                             StatusMessage = "Order is UnPaid",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(5052)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5780)
                         });
                 });
 
@@ -475,43 +446,43 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f61ea3ac-4933-43a5-a94a-3e692ac416e9"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4960),
+                            Id = new Guid("2c25195f-c68e-48cd-9668-3e8882750690"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5630),
                             Description = "Order progression refers to the series of steps or stages that an order goes through from the moment it is placed until it is fulfilled or completed. This process is commonly associated with e-commerce, retail, manufacturing, and various other industries where goods or services are exchanged between a customer and a business.",
                             Name = "Order Progression",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4970)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5639)
                         },
                         new
                         {
-                            Id = new Guid("b7117f24-59f8-4c75-acb1-b718b90496a2"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4973),
+                            Id = new Guid("725ee0b2-e5c6-40c3-b300-dab95e7a1540"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5643),
                             Description = "A financial transaction refers to the exchange of funds or financial assets between two or more parties. These transactions are essential in the functioning of economies and businesses, enabling the flow of money, resources, and investments. Financial transactions can take many forms and serve various purposes, but they typically involve the transfer of money, securities, or other financial instruments.",
                             Name = "Financial Transaction",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4973)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5643)
                         },
                         new
                         {
-                            Id = new Guid("9552c944-c401-4879-99f3-18496844bbc9"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4975),
+                            Id = new Guid("bc1c06e4-6fdd-439d-a1de-28d610405a10"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5645),
                             Description = "Authorization and the Payment Module work together to create a secure and user-friendly experience. Authorization ensures that users have proper access, while the Payment Module facilitates hassle-free and secure transactions, making it convenient for customers to order and pay for their lunch",
                             Name = "Authorization and Pay Mod",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4975)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5646)
                         },
                         new
                         {
-                            Id = new Guid("7709f50f-ede0-4817-b1ac-0287a5cd948f"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4976),
+                            Id = new Guid("e6c20e72-f4f7-44f8-9906-87e0e63362f9"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5647),
                             Description = "Payment status refers to the state or condition of a financial transaction at a specific point in time. It provides information about whether a payment has been successfully completed, is pending, or has encountered issues. Payment status is important for both the payer and the payee as it indicates the outcome of a financial transaction.",
                             Name = "Payment Status",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4977)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5648)
                         },
                         new
                         {
-                            Id = new Guid("a81cbadc-d9a8-4ac7-a89d-c768bb023705"),
-                            CreatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4978),
+                            Id = new Guid("0cce8285-f52b-4b16-b8f5-7bcc199c8bde"),
+                            CreatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5650),
                             Description = "\"Review\" and \"Dispute\" are essential features that can enhance the user experience and address potential issues.",
                             Name = "Review and Dispute",
-                            UpdatedAt = new DateTime(2023, 9, 29, 7, 37, 13, 909, DateTimeKind.Local).AddTicks(4978)
+                            UpdatedAt = new DateTime(2023, 9, 29, 1, 17, 26, 81, DateTimeKind.Local).AddTicks(5650)
                         });
                 });
 

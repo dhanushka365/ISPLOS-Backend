@@ -26,5 +26,8 @@ namespace API.Dtos
         [Required]
         public Guid ProductBrandId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
     }
 }
