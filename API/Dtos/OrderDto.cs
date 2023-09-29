@@ -1,7 +1,7 @@
 ﻿using Core.Entities.OrderAggregate;
 using System.ComponentModel.DataAnnotations;
 using Core.Entities.Identity;
-using Core.Entities.PaymentAggregate;
+using Core.Entities;
 
 namespace API.Dtos
 {

@@ -2,7 +2,7 @@
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Core.Entities.Identity;
-using Core.Entities.ProductAggregate;
+using Core.Entities;
 
 namespace API.Mappers
 {

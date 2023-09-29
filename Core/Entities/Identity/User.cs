@@ -1,5 +1,4 @@
 ﻿using Core.Entities.OrderAggregate;
-using Core.Entities.PaymentAggregate;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
