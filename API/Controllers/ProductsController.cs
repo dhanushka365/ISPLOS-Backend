@@ -65,7 +65,6 @@ namespace API.Controllers
                     Price = p.Price,
                     Description = p.Description,
                     PictureUrl = p.PictureUrl
-
                 })
                 .ToListAsync();
 
@@ -96,9 +95,7 @@ namespace API.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-
                 PictureUrl = product.PictureUrl
-
             };
 
             return Ok(productToReturn);
