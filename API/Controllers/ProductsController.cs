@@ -18,20 +18,21 @@ namespace API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IGenericRepository<Product> _productsRepo;
-        private readonly IGenericRepository<Image> _imageRepository;
+      //  private readonly IGenericRepository<Product> _productsRepo;
+      //  private readonly IGenericRepository<Image> _imageRepository;
 
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IProductRepository _productsRepo;
 
-        public ProductsController(IConfiguration configuration, IGenericRepository<Product> productsRepo,
-          IMapper mapper, ILogger<ProductsController> logger, IGenericRepository<Image> imageRepository)
+        public ProductsController(IConfiguration configuration,
+          IMapper mapper, ILogger<ProductsController> logger,IProductRepository productsRepo)
         {
             _configuration = configuration;
-            _productsRepo = productsRepo;
             _logger = logger;
+            _productsRepo = productsRepo;
             _mapper = mapper;
-            _imageRepository = imageRepository;
+          //  _imageRepository = imageRepository;
         }
 
 
@@ -379,8 +380,8 @@ namespace API.Controllers
                     FileDescription = request.FileDescription,
                 };
 
-                var uploadedImage = await _imageRepository.UploadImage(imageEntity);
-                product.PictureUrl = uploadedImage.FilePath;
+              //  var uploadedImage = await _imageRepository.UploadImage(imageEntity);
+              //  product.PictureUrl = uploadedImage.FilePath;
                 await _productsRepo.UpdateAsync(product);
 
                 return Ok("Image uploaded successfully");

@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Identity;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,30 +12,16 @@ namespace Infrastructure.Data
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
+        private readonly StoreContext context;
+
         public OrderRepository(StoreContext context) : base(context)
         {
+            this.context = context;
         }
 
-        public Task<Order> CreateOrderAsync(string buyerEmail, int delieveryMethod, string basketId)
+        public async Task<List<Order>> GetAll()
         {
-            throw new NotImplementedException();
+          return await context.Orders.Include(x => x.User).Include(x => x.OrderProducts).ThenInclude(x => x.Product).ToListAsync();
         }
-
-        public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
-        {
-            throw new NotImplementedException();
-        }
-    
-       
     }
 }

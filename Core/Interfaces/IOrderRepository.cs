@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-    public interface IOrderRepository
+    public interface IOrderRepository :IGenericRepository<Order>
     {
-        Task<Order> CreateOrderAsync(string buyerEmail, int delieveryMethod, string basketId);
-        Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail);
-        Task<Order> GetOrderByIdAsync(int id, string buyerEmail);
-        Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
+
+        Task<List<Order>> GetAll();
     }
 }
