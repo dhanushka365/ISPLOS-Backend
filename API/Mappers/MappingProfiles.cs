@@ -29,6 +29,7 @@ namespace API.Mappers
             CreateMap<OrderProduct,OrderProductResponseDTO>().ReverseMap();
             CreateMap<OrderProduct ,OrderProductObjectResponseDTO>().ReverseMap();
             CreateMap<OrderProduct, OrderProductObjectDTO>().ReverseMap();
+            CreateMap<OrderProduct,OrderProductDTO>().ReverseMap();
             CreateMap<Order, OrderProductObjectResponseDTO>().ReverseMap();
             CreateMap<User, UserMinimumDataDTO>().ReverseMap();
 
