@@ -1,6 +1,6 @@
-namespace API.Tests
+namespace API.Tests.Controllers
 {
-    public class UnitTest1
+    public class ProductsController
     {
         [Fact]
         public void Test1()
