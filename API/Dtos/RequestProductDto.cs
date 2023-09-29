@@ -21,7 +21,12 @@ namespace API.Dtos
         //[Required]
         //public Guid ProductTypeId { get; set; }
 
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
         //[Required]
         //public Guid ProductBrandId { get; set; }
+
     }
 }

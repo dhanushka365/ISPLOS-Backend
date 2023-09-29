@@ -19,13 +19,19 @@ namespace API.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IGenericRepository<Product> _productsRepo;
+
+        private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+        private readonly IGenericRepository<Image> _imageRepository;
+
       //  private readonly IGenericRepository<ProductType> _productTypeRepo;
       //  private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(IConfiguration configuration, IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger)
+            IGenericRepository<ProductType> productTypeRepo, IGenericRepository<ProductBrand> productBrandRepo, IMapper mapper, ILogger<ProductsController> logger, IGenericRepository<Image> imageRepository)
         {
             _configuration = configuration;
             _productsRepo = productsRepo;
@@ -33,6 +39,7 @@ namespace API.Controllers
            // _productBrandRepo = productBrandRepo;
             _logger = logger;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
 
         //[HttpGet("api-key")]
@@ -42,14 +49,14 @@ namespace API.Controllers
         //    return Ok(apiKey);
         //}
 
-    //-------------------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            
+
             var queryableProducts = _productsRepo.GetAllQueryable();
 
-            
+
             var products = await queryableProducts
                 .Select(p => new ProductToReturnDto
                 {
@@ -57,7 +64,13 @@ namespace API.Controllers
                     Name = p.Name,
                     Price = p.Price,
                     Description = p.Description,
-                    PictureUrl = p.PictureUrl
+                    PictureUrl = p.PictureUrl,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductTypeId = p.ProductTypeId,
+                    ProductTypeName = p.ProductType.Name,
+                    ProductBrandName = p.ProductBrand.Name
+
+
                 })
                 .ToListAsync();
 
@@ -65,7 +78,7 @@ namespace API.Controllers
 
         }
 
-     //-------------------------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------------------------------
 
         [HttpGet]
         [Route("id:Guid")]
@@ -78,21 +91,29 @@ namespace API.Controllers
 
             if (product == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-           
+
             var productToReturn = new ProductToReturnDto
             {
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                PictureUrl = product.PictureUrl
+
+                PictureUrl = product.PictureUrl,
+                ProductTypeId = product.ProductTypeId,
+                ProductBrandId = product.ProductBrandId,
+                ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
+                ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
+
             };
 
-            return Ok(productToReturn); 
+            return Ok(productToReturn);
         }
+
+
 
 
         //[HttpGet("brands")]
@@ -121,6 +142,7 @@ namespace API.Controllers
         //    return Ok(brands);
         //    //return Ok(await _productBrandRepo.ListAllAsync());
         //}
+
 
         //[HttpGet("types")]
         //public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
@@ -164,8 +186,10 @@ namespace API.Controllers
 
         //    await _productBrandRepo.SaveAsync();
 
+
         //    return Ok(); 
         //}
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(Guid id, Product product)
@@ -188,7 +212,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-       
+
 
 
         //---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -273,7 +297,7 @@ namespace API.Controllers
             }
         }
 
-     //---------------------------------------------------------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------------------------------------------------
 
         //[HttpDelete("brand/{id}")]
         //public async Task<ActionResult> DeleteProductBrand(Guid id)
@@ -300,7 +324,7 @@ namespace API.Controllers
         //}
 
 
-     
+
 
 
         //[HttpDelete("type/{id}")]
@@ -352,10 +376,77 @@ namespace API.Controllers
         }
 
 
+        [HttpPatch]
+        [Route("Upload/{productId}")]
+        public async Task<ActionResult> UploadProductImage(Guid productId, [FromForm] ImageUploadRequestDto request)
+        {
+            var product = await _productsRepo.GetByIdAsync(p => p.Id == productId);
+            if (product == null)
+            {
+                return NotFound("Product not found");
+            }
+            ValidateFileUpload(request);
+
+
+            if (!ModelState.IsValid)
+            {
+            
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var imageEntity = new Image
+                {
+                    File = request.File,
+                    FileName = request.FileName,
+                    FileExtension = Path.GetExtension(request.FileName),
+                    FileSizeInBytes = request.File.Length,
+                    FileDescription = request.FileDescription,
+                };
+
+                var uploadedImage = await _imageRepository.UploadImage(imageEntity);
+                product.PictureUrl = uploadedImage.FilePath;
+                await _productsRepo.UpdateAsync(product);
+
+                return Ok("Image uploaded successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+
+        }
+
+    
+
+        private void ValidateFileUpload(ImageUploadRequestDto request)
+        {
+            var alloweExtentions = new string[] { ".jpg", ".jpeg", ".png" };
+
+
+            if (!alloweExtentions.Contains(Path.GetExtension(path: request.File.FileName)))
+            {
+                ModelState.AddModelError("file", "Unsupported file type");
+            }
+
+
+            if (request.File.Length > 10485760)
+            {
+                ModelState.AddModelError("file", "please upload file size more than 10mb");
+            }
+
+        }
+
+
+
+
+
+
+
     }
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-    
 }

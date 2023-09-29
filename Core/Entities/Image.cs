@@ -24,5 +24,8 @@ namespace Core.Entities
         public long FileSizeInBytes { get; set; }
 
         public string FilePath { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

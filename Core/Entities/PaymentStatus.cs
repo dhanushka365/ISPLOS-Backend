@@ -18,5 +18,8 @@ namespace Core.Entities
 
         // Collection of payments associated with this status
         public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }
