@@ -398,10 +398,7 @@ namespace API.Controllers
                     FileDescription = request.FileDescription,
                 };
 
-                // Upload the image and update the Image entity's FilePath
                 var uploadedImage = await _imageRepository.UploadImage(imageEntity);
-
-                // Update the product's PictureUrl with the uploaded image's FilePath
                 product.PictureUrl = uploadedImage.FilePath;
                 await _productsRepo.UpdateAsync(product);
 
