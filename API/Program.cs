@@ -13,6 +13,7 @@ using API.Mappers;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,10 +132,13 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
     options.ReportApiVersions = true;
+
 });
 
 builder.Services.AddVersionedApiExplorer(options =>
 {
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 
