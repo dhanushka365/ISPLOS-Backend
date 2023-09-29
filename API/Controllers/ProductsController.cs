@@ -382,13 +382,12 @@ namespace API.Controllers
 
             if (!ModelState.IsValid)
             {
-                // If validation fails, return a bad request response with validation errors
+            
                 return BadRequest(ModelState);
             }
 
             try
             {
-                // Create an Image entity for the uploaded image
                 var imageEntity = new Image
                 {
                     File = request.File,
@@ -418,12 +417,12 @@ namespace API.Controllers
         {
             var alloweExtentions = new string[] { ".jpg", ".jpeg", ".png" };
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+
             if (!alloweExtentions.Contains(Path.GetExtension(path: request.File.FileName)))
             {
                 ModelState.AddModelError("file", "Unsupported file type");
             }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
 
             if (request.File.Length > 10485760)
             {
