@@ -4,11 +4,13 @@ using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -23,12 +25,14 @@ namespace API.Controllers
         private readonly IGenericRepository<DeliveryMethod> _dmRepo;
         private readonly IGenericRepository<OrderStatus> _orderStatusRepo;
         private readonly IGenericRepository<OrderStatusType> _orderStatusTypeRepo;
-
+        private readonly IUserRepository userRepository;
+        private readonly IOrderProductRepository orderProductRepository;
+        private readonly IProductRepository productRepository;
         private readonly ILogger<OrderController> _logger;
 
         public OrderController(IConfiguration configuration, IGenericRepository<Order> ordersRepo,
             IGenericRepository<OrderProduct> orderItemsRepo, IGenericRepository<DeliveryMethod> dmRepo,
-            IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo, IGenericRepository<OrderStatusType> orderStatusTypeRepo)
+            IMapper mapper, ILogger<OrderController> logger, IGenericRepository<OrderStatus> orderStatusRepo, IGenericRepository<OrderStatusType> orderStatusTypeRepo,IUserRepository userRepository,IOrderProductRepository orderProductRepository,IProductRepository productRepository)
         {
             _configuration = configuration;
             _ordersRepo = ordersRepo;
@@ -38,7 +42,9 @@ namespace API.Controllers
             _logger = logger;
             _orderStatusRepo = orderStatusRepo;
             _orderStatusTypeRepo = orderStatusTypeRepo;
-
+            this.userRepository = userRepository;
+            this.orderProductRepository = orderProductRepository;
+            this.productRepository = productRepository;
         }
 
   
@@ -68,28 +74,62 @@ namespace API.Controllers
             return Ok(orders);
         }
 
-        [HttpPost("order")]
+        [HttpPost]
+        [Authorize]
         public async Task<ActionResult> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
         {
             try
             {
-                
-                var order = _mapper.Map<Order>(requestOrderDto);
-                order.Id = Guid.NewGuid();
 
-                if (order == null)
+                if(requestOrderDto == null)
                 {
-                    return NotFound(); // Return a 404 Not Found response
+                    return BadRequest("Requested Details Not Sufficient");
                 }
+
+                var UserName  = User.FindFirstValue(ClaimTypes.Name);
+
+                var user  =  await userRepository.FilterObject(x=>x.UserName == UserName);
+
+                var order = new Order
+                {
+                    CreatedAt = DateTime.Now,
+                    OrderDate = DateTime.Now,
+                    UserID = user.Id
+                };
 
                 await _ordersRepo.AddAsync(order);
                 await _ordersRepo.SaveAsync();
 
-                var createdOrderDto = _mapper.Map<OrderDto>(order);
+                foreach (var item in requestOrderDto.Order)
+                {
+                    var Product = await productRepository.GetProductByIdAsync(item.ProductID);
+                    var OrderProduct = new OrderProduct
+                    {
+                        Order = order,
+                        Product = Product,
+                        Quantity = item.Quntity,
+                        CurrentPrice = Product.Price,
+                        CreatedAt= DateTime.Now
+                        
+                    };
+
+                   await orderProductRepository.AddAsync(OrderProduct);
+                    
+                }
+
+               await orderProductRepository.SaveAsync();
+
+
+
+
+
+
 
                 _logger.LogInformation("Order created and saved successfully.");
 
-                return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, createdOrderDto);
+                return Ok(requestOrderDto);
+
+              //  return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, createdOrderDto);
             }
             catch (Exception ex)
             {
