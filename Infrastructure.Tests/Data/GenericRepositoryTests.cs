@@ -1,6 +1,6 @@
-namespace Infrastructure.Tests
+namespace Infrastructure.Tests.Data
 {
-    public class UnitTest1
+    public class GenericRepositoryTests
     {
         [Fact]
         public void Test1()
