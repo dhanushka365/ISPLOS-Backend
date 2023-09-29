@@ -21,7 +21,7 @@ namespace API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
+        //private readonly IConfiguration _configuration;
         private readonly IUserRepository userRepository;
         private readonly IOrderProductRepository orderProductRepository;
         private readonly IProductRepository productRepository;
@@ -32,7 +32,7 @@ namespace API.Controllers
         public OrderController(IConfiguration configuration,
             IMapper mapper, ILogger<OrderController> logger,IUserRepository userRepository,IOrderProductRepository orderProductRepository,IProductRepository productRepository,IOrderRepository orderRepository,StoreContext storeContext)
         {
-            _configuration = configuration;
+          //  _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
             this.userRepository = userRepository;
@@ -76,6 +76,24 @@ namespace API.Controllers
             {
                   var OrderProductList = await orderRepository.GetAll();
                   var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+   
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<ActionResult<Order>> GetOrder([FromRoute] Guid id)
+        {
+            try
+            {
+                var OrderProductList = await orderRepository.FindById(x=>x.Id.Equals(id));
+                var response = _mapper.Map<OrderProductObjectResponseDTO>(OrderProductList);
 
                 return Ok(response);
             }
@@ -153,26 +171,61 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder([FromBody] OrderDto orderDto)
+        [Route("{id:Guid}/Products/{pid:Guid}")]
+        public async Task<IActionResult> UpdateOrderProduct([FromBody] UpdateOrderProductDTO updateOrderProductDTO, [FromRoute] Guid id, [FromRoute] Guid pid)
         {
-            if (!ModelState.IsValid)
+
+            try
             {
-                return BadRequest(ModelState);
+                var orderProduct = await orderProductRepository.GetByIdAsync(x => x.OrderId.Equals(id) && x.ProductId.Equals(pid));
+
+                if (orderProduct == null)
+                {
+                    return NotFound(); // Return a 404 Not Found response
+                }
+
+                orderProduct.Quantity = updateOrderProductDTO.Quantity;
+
+                await orderProductRepository.SaveAsync();
+
+                //var response = _mapper.Map<OrderProductDTO>(orderProduct);
+
+                return Ok(orderProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            var order = await orderRepository.GetByIdAsync(x => x.Id == orderDto.Id);
+          
+        }
 
-            if (order == null)
+        [HttpDelete]
+        [Route("{id:Guid}/Products/{pid:Guid}")]
+        public async Task<IActionResult> DeleteOrderProduct([FromRoute] Guid id, [FromRoute] Guid pid)
+        {
+
+            try
             {
-                return NotFound(); // Return a 404 Not Found response
+                var orderProduct = await orderProductRepository.GetByIdAsync(x => x.OrderId.Equals(id) && x.ProductId.Equals(pid));
+
+                if (orderProduct == null)
+                {
+                    return NotFound(); // Return a 404 Not Found response
+                }
+
+                orderProductRepository.Delete(orderProduct);
+
+                await orderProductRepository.SaveAsync();
+
+                return Ok(orderProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            _mapper.Map(orderDto, order);
 
-            await orderRepository.UpdateAsync(order);
-            await orderRepository.SaveAsync();
-
-            return NoContent();
         }
 
         [HttpDelete]
@@ -189,7 +242,7 @@ namespace API.Controllers
             orderRepository.Delete(order);
             await orderRepository.SaveAsync();
 
-            return NoContent();
+            return Ok(_mapper.Map<OrderDto>(order));
         }
 
         
