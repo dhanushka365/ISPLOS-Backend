@@ -20,8 +20,8 @@ namespace API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IGenericRepository<Product> _productsRepo;
 
-        private readonly IGenericRepository<ProductType> _productTypeRepo;
-        private readonly IGenericRepository<ProductBrand> _productBrandRepo;
+      //  private readonly IGenericRepository<ProductType> _productTypeRepo;
+      //  private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IGenericRepository<Image> _imageRepository;
 
       //  private readonly IGenericRepository<ProductType> _productTypeRepo;
@@ -64,13 +64,7 @@ namespace API.Controllers
                     Name = p.Name,
                     Price = p.Price,
                     Description = p.Description,
-                    PictureUrl = p.PictureUrl,
-                    //ProductBrandId = p.ProductBrandId,
-                    //ProductTypeId = p.ProductTypeId,
-                    //ProductTypeName = p.ProductType.Name,
-                    //ProductBrandName = p.ProductBrand.Name
-
-
+                    PictureUrl = p.PictureUrl
                 })
                 .ToListAsync();
 
@@ -101,13 +95,7 @@ namespace API.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-
-                PictureUrl = product.PictureUrl,
-                //ProductTypeId = product.ProductTypeId,
-                //ProductBrandId = product.ProductBrandId,
-                //ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
-                //ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
-
+                PictureUrl = product.PictureUrl
             };
 
             return Ok(productToReturn);
