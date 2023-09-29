@@ -65,10 +65,10 @@ namespace API.Controllers
                     Price = p.Price,
                     Description = p.Description,
                     PictureUrl = p.PictureUrl,
-                    ProductBrandId = p.ProductBrandId,
-                    ProductTypeId = p.ProductTypeId,
-                    ProductTypeName = p.ProductType.Name,
-                    ProductBrandName = p.ProductBrand.Name
+                    //ProductBrandId = p.ProductBrandId,
+                    //ProductTypeId = p.ProductTypeId,
+                    //ProductTypeName = p.ProductType.Name,
+                    //ProductBrandName = p.ProductBrand.Name
 
 
                 })
@@ -103,10 +103,10 @@ namespace API.Controllers
                 Price = product.Price,
 
                 PictureUrl = product.PictureUrl,
-                ProductTypeId = product.ProductTypeId,
-                ProductBrandId = product.ProductBrandId,
-                ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
-                ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
+                //ProductTypeId = product.ProductTypeId,
+                //ProductBrandId = product.ProductBrandId,
+                //ProductTypeName = product.ProductType != null ? product.ProductType.Name : null,
+                //ProductBrandName = product.ProductBrand != null ? product.ProductBrand.Name : null
 
             };
 
