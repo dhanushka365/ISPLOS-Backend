@@ -10,7 +10,7 @@ namespace Core.Entities
 {
     public class Balance:BaseEntity
     {
-        public double RemainBalance { get; set; }
+        public decimal RemainBalance { get; set; }
 
         public Guid UserId { get; set; }
         public User User { get; set; }

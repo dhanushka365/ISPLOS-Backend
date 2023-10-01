@@ -15,11 +15,15 @@ namespace Core.Interfaces
 
         Task<List<Order>> GetAll();
 
+        //Task<Order> UpdateIsPaid(Expression<Func<Order, bool>> expression , bool Ispaid);
+
         Task<Order> FindById(Expression<Func<Order, bool>> expression);
 
         Task<List<Order>> GetAllByParams(Expression<Func<Order, bool>> expression);
 
         Task<List<ProductInfo>> GetALLByProductAndCount();
+
+        Task<List<OrderPayment>> GetAllWithPayableAmount(Expression<Func<OrderProduct, bool>> expression);
 
         
     }
