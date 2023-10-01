@@ -10,23 +10,15 @@ namespace Core.Entities
 {
     public class Payment:BaseEntity
     {
-        
-        public string PaymentMethod { get; set; } // Name of the payment method (e.g., "Credit Card", "PayPal" ,"cash")
-        public string PaymentMethodType { get; set; } // Type of the payment method (e.g., "Credit Card", "Online Payment")
-        public string PaymentMethodDescription { get; set; } 
         public decimal Amount { get; set; } 
-        public DateTime PaymentDate { get; set; }
-        //public string TransactionId { get; set; } 
-        public PaymentStatus PaymentStatus { get; set; }// Payment status (e.g., "Pending", "Completed")
-
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
-
+        public DateTime PaymentDate { get; set; } = DateTime.Now;
+   
         public Guid UserId { get; set; }
 
         public User User { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
 
     }

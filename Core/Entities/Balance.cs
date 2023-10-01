@@ -10,21 +10,13 @@ namespace Core.Entities
 {
     public class Balance:BaseEntity
     {
+        public double RemainBalance { get; set; }
 
-
-        public double remainBalance { get; set; }
-
-   
         public Guid UserId { get; set; }
-
         public User User { get; set; }
 
-        public string CreatedByUser { get; set; }
-
-        public string UpdatedByUser { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
 
 
