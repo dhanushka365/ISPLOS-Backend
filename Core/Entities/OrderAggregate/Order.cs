@@ -12,8 +12,7 @@ namespace Core.Entities.OrderAggregate
     {
 
         [Required]
-        [DataType(DataType.Date)]
-
+        
         public string OrderDate { get; set; }  = DateTime.Now.ToShortDateString();
 
         [Required]
