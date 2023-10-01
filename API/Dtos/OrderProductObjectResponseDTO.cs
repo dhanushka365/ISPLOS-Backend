@@ -10,9 +10,7 @@ namespace API.Dtos
         public Guid Id { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
-
-        public DateTime OrderDate { get; set; }
+        public string OrderDate { get; set; }
 
         [Required]
         public Guid UserID { get; set; }

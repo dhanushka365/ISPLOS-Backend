@@ -14,7 +14,7 @@ namespace Core.Entities.OrderAggregate
         [Required]
         [DataType(DataType.Date)]
 
-        public DateTime OrderDate { get; set; } 
+        public string OrderDate { get; set; }  = DateTime.Now.ToShortDateString();
 
         [Required]
         public Guid UserID { get; set; }

@@ -42,39 +42,24 @@ namespace API.Controllers
             this.storeContext = storeContext;
         }
 
-
-
-        //[HttpGet]
-        //public async Task<ActionResult<IReadOnlyList<Order>>> GetOrders(
-        //    [FromQuery] string search = null,
-        //    [FromQuery] int page = 1,
-        //    [FromQuery] int pageSize = 10)
-        //{
-        //    Expression<Func<Order, bool>> filter = null;
-
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-
-        //        filter = order => order.User.UserName.Contains(search, StringComparison.OrdinalIgnoreCase);
-        //    }
-
-        //    int skip = (page - 1) * pageSize;
-
-        //    var orders = await orderRepository.ListAllAsync(
-        //        filter: filter,
-        //        orderBy: null,
-        //        pageNumber: page,
-        //        pageSize: pageSize);
-
-        //    return Ok(orders);
-        //}
-
+        //Get All Orders
+        //Get Today's Orders
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Order>>> GetALLOrders()
+        public async Task<ActionResult<List<Order>>> GetALLOrders([FromQuery] bool isToday)
         {
             try
             {
-                  var OrderProductList = await orderRepository.GetAll();
+                var OrderProductList = new List<Order>();
+                if (isToday)
+                {
+                    var Today = DateTime.Now.ToShortDateString();
+                    OrderProductList = await orderRepository.GetAllByParams(x => x.OrderDate == Today && x.IsPaid==false);
+                }
+                else
+                {
+                    OrderProductList = await orderRepository.GetAll();
+                }
+                
                   var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
 
                 return Ok(response);
@@ -85,10 +70,10 @@ namespace API.Controllers
             }
         }
 
-   
+        //Get One Order By ID
         [HttpGet]
         [Route("{id:Guid}")]
-        public async Task<ActionResult<Order>> GetOrder([FromRoute] Guid id)
+        public async Task<ActionResult> GetOrder([FromRoute] Guid id)
         {
             try
             {
@@ -103,7 +88,118 @@ namespace API.Controllers
             }
         }
 
+        //Get All the order of the User
+        //Get All Paid Orders of the User
+        //Get All UnPaid Orders of rge User
+        [HttpGet]
+        [Route("user")]
+        public async Task<ActionResult> GetOrderofUser([FromQuery] bool isPaid, [FromQuery] bool isAll)
+        {
+            try
+            {
+                var OrderProductList = new List<Order>();
+                var UserName = User.FindFirstValue(ClaimTypes.Name);
 
+                var user = await userRepository.FilterObject(x => x.UserName == UserName);
+
+                if (isAll)
+                {
+                    OrderProductList = await orderRepository.GetAllByParams(x => x.UserID.Equals(user.Id));
+                }
+                else if (!isAll)
+                {
+                    OrderProductList = await orderRepository.GetAllByParams(x => x.UserID.Equals(user.Id) && x.IsPaid == isPaid);
+
+                }
+
+
+                var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
+                return Ok(response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+
+        }
+
+        //Get Orders By User
+        //Get All Paid Orders of the User
+        //Get All UnPaid Orders of rge User
+        [HttpGet]
+        [Route("user/{uid:Guid}")]
+        public async Task<ActionResult> GetOrderByUser([FromRoute] Guid uid, [FromQuery] bool isPaid, [FromQuery] bool isAll)
+        {
+            try
+            {
+                var OrderProductList = new List<Order>();
+
+                if(isAll)
+                {
+                    OrderProductList = await orderRepository.GetAllByParams(x => x.UserID.Equals(uid));
+                }
+                else if (!isAll)
+                {
+                    OrderProductList = await orderRepository.GetAllByParams(x => x.UserID.Equals(uid) && x.IsPaid == isPaid);
+
+                }
+                
+
+                var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
+                return Ok(response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+
+        }
+
+        //Get Today's Orders
+        //[HttpGet]
+        //[Route("today")]
+        //public async Task<ActionResult> GetAllTodayOrder()
+        //{
+        //    try
+        //    {
+        //        var Today = DateTime.Now.ToShortDateString();
+        //        var OrderProductList =  await orderRepository.GetAllByParams(x=>x.OrderDate == Today);
+        //        var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
+        //        return Ok(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+
+
+        //Get Today's Orders
+        [HttpGet]
+        [Route("today/stat")]
+        public async Task<ActionResult> GetAllTodayOrderStat()
+        {
+            try
+            {
+                var Today = DateTime.Now.ToShortDateString();
+                var OrderProductList = await orderRepository.GetALLByProductAndCount();
+                var response = _mapper.Map<List<ProductStatDTO>>(OrderProductList);
+                return Ok(response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //Create Order
         [HttpPost]
         [Authorize]
         public async Task<ActionResult> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
@@ -123,8 +219,9 @@ namespace API.Controllers
 
                     var order = new Order
                     {
+                       
                         CreatedAt = DateTime.Now,
-                        OrderDate = DateTime.Now,
+                        OrderDate = DateTime.Now.ToShortDateString(),
                         UserID = user.Id
                     };
 
@@ -170,6 +267,67 @@ namespace API.Controllers
                 }
         }
 
+        //Create Order To Specific User
+        [HttpPost]
+        [Route("user/{uid}")]
+        public async Task<ActionResult> CreateOrderForUser([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid uid)
+        {
+            using (var transaction = storeContext.Database.BeginTransaction())
+                try
+                {
+                    if (requestOrderDto == null)
+                    {
+                        return BadRequest("Requested Details Not Sufficient");
+                    }
+                    var user = await userRepository.GetByIdAsync(x => x.Id == uid);
+
+                    var order = new Order
+                    {
+                        CreatedAt = DateTime.Now,
+                        OrderDate = DateTime.Now.ToShortDateString(),
+                        UserID = user.Id
+                    };
+
+                    await orderRepository.AddAsync(order);
+                    await orderRepository.SaveAsync();
+
+                    var Result = new List<OrderProductResponseDTO>();
+                    foreach (var item in requestOrderDto.Order)
+                    {
+                        var Product = await productRepository.GetProductByIdAsync(item.ProductID);
+                        var OrderProduct = new OrderProduct
+                        {
+                            Order = order,
+                            Product = Product,
+                            Quantity = item.Quntity,
+                            CurrentPrice = Product.Price,
+                            CreatedAt = DateTime.Now
+
+                        };
+
+                        Result.Add(_mapper.Map<OrderProductResponseDTO>(OrderProduct));
+
+                        await orderProductRepository.AddAsync(OrderProduct);
+                        await orderProductRepository.SaveAsync();
+
+                    }
+
+                    await transaction.CommitAsync();
+
+
+
+                    _logger.LogInformation("Order created and saved successfully.");
+                    return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, Result);
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogError(ex, "Error occurred while creating and saving the order.");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+        }
+
+        //Update Products of the Order
         [HttpPut]
         [Route("{id:Guid}/Products/{pid:Guid}")]
         public async Task<IActionResult> UpdateOrderProduct([FromBody] UpdateOrderProductDTO updateOrderProductDTO, [FromRoute] Guid id, [FromRoute] Guid pid)
@@ -200,6 +358,7 @@ namespace API.Controllers
           
         }
 
+        //Delete the Product of the Order
         [HttpDelete]
         [Route("{id:Guid}/Products/{pid:Guid}")]
         public async Task<IActionResult> DeleteOrderProduct([FromRoute] Guid id, [FromRoute] Guid pid)
@@ -228,6 +387,7 @@ namespace API.Controllers
 
         }
 
+        //Delete the Order by Order ID
         [HttpDelete]
         [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteOrder([FromRoute] Guid id)
@@ -245,7 +405,6 @@ namespace API.Controllers
             return Ok(_mapper.Map<OrderDto>(order));
         }
 
-        
     }
 
 }
