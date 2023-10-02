@@ -58,15 +58,22 @@ namespace API.Controllers
             var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID.Equals(uid));
             var balance = await balanceRepository.FilterObject(x => x.UserId == uid);
             decimal TotalAmount = 0;
+            decimal BalanceAmount = 0;
             foreach (var orderProduct in OrderProductList)
             {
                 TotalAmount += orderProduct.Amount;
             }
 
+            if (balance != null)
+            {
+                BalanceAmount = balance.RemainBalance;
+            }
+
+
             var response = new 
                {
                    TotalAmount,
-                  balance.RemainBalance,
+                   BalanceAmount,
                 };
             return Ok(response);
         }
