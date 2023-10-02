@@ -45,6 +45,8 @@ namespace API.Controllers
         //Get All Orders
         //Get Today's Orders
         [HttpGet]
+        [Route("admin/all")]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<List<Order>>> GetALLOrders([FromQuery] bool isToday)
         {
             try
@@ -73,6 +75,7 @@ namespace API.Controllers
         //Get One Order By ID
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> GetOrder([FromRoute] Guid id)
         {
             try
@@ -93,6 +96,7 @@ namespace API.Controllers
         //Get All UnPaid Orders of rge User
         [HttpGet]
         [Route("user")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> GetOrderofUser([FromQuery] bool isPaid, [FromQuery] bool isAll)
         {
             try
@@ -129,7 +133,8 @@ namespace API.Controllers
         //Get All Paid Orders of the User
         //Get All UnPaid Orders of rge User
         [HttpGet]
-        [Route("user/{uid:Guid}")]
+        [Route("admin/user/{uid:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetOrderByUser([FromRoute] Guid uid, [FromQuery] bool isPaid, [FromQuery] bool isAll)
         {
             try
@@ -159,30 +164,11 @@ namespace API.Controllers
 
         }
 
-        //Get Today's Orders
-        //[HttpGet]
-        //[Route("today")]
-        //public async Task<ActionResult> GetAllTodayOrder()
-        //{
-        //    try
-        //    {
-        //        var Today = DateTime.Now.ToShortDateString();
-        //        var OrderProductList =  await orderRepository.GetAllByParams(x=>x.OrderDate == Today);
-        //        var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
-        //        return Ok(response);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-
-
-
+        
         //Get Today's Orders
         [HttpGet]
-        [Route("today/stat")]
+        [Route("admin/today/stat")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetAllTodayOrderStat()
         {
             try
@@ -201,7 +187,7 @@ namespace API.Controllers
 
         //Create Order
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles ="Admin,User")]
         public async Task<ActionResult> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
         {
             using (var transaction = storeContext.Database.BeginTransaction())
@@ -236,7 +222,7 @@ namespace API.Controllers
                         {
                             Order = order,
                             Product = Product,
-                            Quantity = item.Quntity,
+                            Quantity = item.Quantity,
                             CurrentPrice = Product.Price,
                             CreatedAt = DateTime.Now
 
@@ -269,7 +255,8 @@ namespace API.Controllers
 
         //Create Order To Specific User
         [HttpPost]
-        [Route("user/{uid}")]
+        [Route("admin/user/{uid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateOrderForUser([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid uid)
         {
             using (var transaction = storeContext.Database.BeginTransaction())
@@ -299,7 +286,7 @@ namespace API.Controllers
                         {
                             Order = order,
                             Product = Product,
-                            Quantity = item.Quntity,
+                            Quantity = item.Quantity,
                             CurrentPrice = Product.Price,
                             CreatedAt = DateTime.Now
 
@@ -330,6 +317,7 @@ namespace API.Controllers
         //Update Products of the Order
         [HttpPut]
         [Route("{id:Guid}/Products/{pid:Guid}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> UpdateOrderProduct([FromBody] UpdateOrderProductDTO updateOrderProductDTO, [FromRoute] Guid id, [FromRoute] Guid pid)
         {
 
@@ -346,9 +334,9 @@ namespace API.Controllers
 
                 await orderProductRepository.SaveAsync();
 
-                //var response = _mapper.Map<OrderProductDTO>(orderProduct);
+                var response = _mapper.Map<OrderProductDTO>(orderProduct);
 
-                return Ok(orderProduct);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -361,6 +349,7 @@ namespace API.Controllers
         //Delete the Product of the Order
         [HttpDelete]
         [Route("{id:Guid}/Products/{pid:Guid}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteOrderProduct([FromRoute] Guid id, [FromRoute] Guid pid)
         {
 
@@ -390,6 +379,7 @@ namespace API.Controllers
         //Delete the Order by Order ID
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteOrder([FromRoute] Guid id)
         {
             var order = await orderRepository.GetByIdAsync(x => x.Id == id);
