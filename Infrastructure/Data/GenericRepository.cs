@@ -16,22 +16,22 @@ namespace Infrastructure.Data
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+      //  private readonly IHttpContextAccessor _httpContextAccessor;
+      //  private readonly IWebHostEnvironment _webHostEnvironment;
       //  private readonly StoreContext context;
-
-        public GenericRepository(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, StoreContext context)
-        {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
-            _webHostEnvironment = webHostEnvironment;
-            
-        }
 
         public GenericRepository(StoreContext context)
         {
-            this._context = context;
+            _context = context;
+          //  _httpContextAccessor = httpContextAccessor;
+          //  _webHostEnvironment = webHostEnvironment;
+            
         }
+
+        //public GenericRepository(StoreContext context)
+        //{
+        //    this._context = context;
+        //}
 
         public async Task AddAsync(T entity)
         {
@@ -140,18 +140,6 @@ namespace Infrastructure.Data
         }
 
 
-        public async Task<Image> UploadImage(Image image)
-        {
-
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images",$"{image.FileName}{image.FileExtension}");
-            using var stream = new FileStream(localFilePath, FileMode.Create);
-            await image.File.CopyToAsync(stream);
-            var urlFilePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{image.FileName}{image.FileExtension}";
-            image.FilePath = urlFilePath;
-            await _context.Set<Image>().AddAsync(image);
-            await _context.SaveChangesAsync();
-            return image;
-
-        }
+     
     }
 }

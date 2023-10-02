@@ -39,6 +39,7 @@ builder.Services.AddScoped<IOrderProductRepository,OrderProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IPaymentRepository,PaymentRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 //Add Generic Repository as service
 //builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
