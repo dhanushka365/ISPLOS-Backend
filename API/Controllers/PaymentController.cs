@@ -139,7 +139,7 @@ namespace API.Controllers
 
             foreach ( var orderProduct in OrderProductList )
             {
-                if(orderProduct.Amount <totalAmount)
+                if(orderProduct.Amount <=totalAmount)
                 {
                     var order = await orderRepository.GetByIdAsync(x => x.Id == orderProduct.Id);
                     order.IsPaid = true;
