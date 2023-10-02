@@ -32,30 +32,67 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles ="Admin,User")]
         public async Task<ActionResult> GetPaymentr()
         {
             var UserName = User.FindFirstValue(ClaimTypes.Name);
 
             var user = await userRepository.FilterObject(x => x.UserName == UserName);
-            var payment = await paymentRepository.FilterList(x => x.UserId == user.Id);
-            return Ok(mapper.Map<List<PaymentDTO>>(payment));
+            var payment = await paymentRepository.GetAllByUser(x => x.UserId == user.Id);
+            var result = mapper.Map<IEnumerable<PaymentHistoryDTO>>(payment);
+            return Ok(result);
 
         }
 
         [HttpGet]
-        [Route("user/{uid:Guid}/payment")]
-        public async Task<ActionResult> GetPaymentDetails([FromRoute] Guid uid)
-        {
-            var payment = await paymentRepository.FilterList(x => x.UserId == uid);
-            return Ok(payment);
-        }
-
-        [HttpGet]
-        [Route("user/{uid:Guid}")]
+        [Route("admin/user/{uid:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetPaymentHistoryOfUser([FromRoute] Guid uid)
         {
-            var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID.Equals(uid));
+            var payment = await paymentRepository.GetAllByUser(x => x.UserId == uid);
+            var result  =  mapper.Map<IEnumerable<PaymentHistoryDTO>>(payment);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("user/payment")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<ActionResult> GetPaymentDetails()
+        {
+            var UserName = User.FindFirstValue(ClaimTypes.Name);
+
+            var user = await userRepository.FilterObject(x => x.UserName == UserName);
+            var uid = user.Id;
+
+            var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID.Equals(uid) &&  x.Order.IsPaid == false);
+            var balance = await balanceRepository.FilterObject(x => x.UserId == uid);
+            decimal TotalAmount = 0;
+            decimal BalanceAmount = 0;
+            foreach (var orderProduct in OrderProductList)
+            {
+                TotalAmount += orderProduct.Amount;
+            }
+
+            if (balance != null)
+            {
+                BalanceAmount = balance.RemainBalance;
+            }
+
+
+            var response = new
+            {
+               Total= decimal.Parse(TotalAmount.ToString("0.00")),
+               balance =  BalanceAmount,
+            };
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("admin/user/{uid:Guid}/payment")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetPaymentDetailsOfUser([FromRoute] Guid uid)
+        {
+            var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID.Equals(uid)&& x.Order.IsPaid ==false);
             var balance = await balanceRepository.FilterObject(x => x.UserId == uid);
             decimal TotalAmount = 0;
             decimal BalanceAmount = 0;
@@ -72,9 +109,9 @@ namespace API.Controllers
 
             var response = new 
                {
-                   TotalAmount,
-                   BalanceAmount,
-                };
+                Total = decimal.Parse(TotalAmount.ToString("0.00")),
+                balance = BalanceAmount,
+            };
             return Ok(response);
         }
 
@@ -82,7 +119,7 @@ namespace API.Controllers
 
 
         [HttpPost]
-        [Route("user/{uid:Guid}")]
+        [Route("admin/user/{uid:Guid}")]
         public async Task<ActionResult> AddPayment([FromBody] RequestPaymentDTO requestPaymentDTO, [FromRoute] Guid uid)
         {
 
@@ -91,37 +128,51 @@ namespace API.Controllers
                 return BadRequest("Requested Details Not Sufficient");
             }
 
-            var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID.Equals(uid) && x.Order.IsPaid == false);
-
+            var OrderProductList = await orderRepository.GetAllWithPayableAmount(x => x.Order.UserID==uid && x.Order.IsPaid == false);
+            var balance = await balanceRepository.FilterObject(x => x.UserId == uid);
+            var totalAmount = requestPaymentDTO.Amount;
+            if(balance != null)
+            {
+                totalAmount += balance.RemainBalance;
+            }
             var Response = new List<OrderDto>();
+
             foreach ( var orderProduct in OrderProductList )
             {
-                if(orderProduct.Amount < requestPaymentDTO.Amount)
+                if(orderProduct.Amount <totalAmount)
                 {
                     var order = await orderRepository.GetByIdAsync(x => x.Id == orderProduct.Id);
                     order.IsPaid = true;
                     await orderRepository.SaveAsync();
                     Response.Add(mapper.Map<OrderDto>(orderProduct));
-                    requestPaymentDTO.Amount -= orderProduct.Amount;
+                    totalAmount -= orderProduct.Amount;
                 }
             }
 
-            var balance =await balanceRepository.FilterObject(x=>x.UserId == uid);
             if (balance == null)
             {
                 var balanceObj = new Balance
                 {
                     UserId = uid,
-                    RemainBalance = (decimal)requestPaymentDTO.Amount,
+                    RemainBalance = (decimal)totalAmount,
                 };
                await balanceRepository.AddAsync(balanceObj);
             }
             else
             {
-                balance.RemainBalance = (decimal)requestPaymentDTO.Amount;
+                balance.RemainBalance = (decimal)totalAmount;
             }
 
+            var PaymentDomain = new Payment
+            {
+                Amount = (decimal)requestPaymentDTO.Amount,
+                UserId = uid,
+            };
+
+            await paymentRepository.AddAsync(PaymentDomain);
+
             await balanceRepository.SaveAsync();
+            await paymentRepository.SaveAsync();
 
             return Ok(Response);
 
