@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -25,6 +26,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Route("admin/all")]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Get([FromQuery] string Name) {
 
@@ -44,10 +46,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
-        [HttpGet]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        [Route("admin/{id:Guid}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserByID([FromRoute] Guid id)
         {
             var user  =  await userRepository.GetByIdAsync(x=> x.Id == id);
 
@@ -55,8 +56,20 @@ namespace API.Controllers
 
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin,,User")]
+        public async Task<IActionResult> Get()
+        {
+            var UserName = User.FindFirstValue(ClaimTypes.Name);
+            var user = await userRepository.GetByIdAsync(x => x.UserName == UserName);
+
+            return Ok(mapper.Map<UserDTO>(user));
+
+        }
+
 
         [HttpPost]
+        [Route("admin")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] RequestUserDTO requestUserDTO)
         {
@@ -83,11 +96,13 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}/Password")]
+        [Route("Password")]
         [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RequestUpdateUserPasswordDTO userPasswordDTO)
+        public async Task<IActionResult> Put([FromBody] RequestUpdateUserPasswordDTO userPasswordDTO)
         {
-            var UserDomain = await userRepository.GetByIdAsync(x => x.Id == id);
+            var UserName = User.FindFirstValue(ClaimTypes.Name);
+
+            var UserDomain = await userRepository.GetByIdAsync(x => x.UserName == UserName);
 
             if (UserDomain == null)
             {
@@ -109,11 +124,11 @@ namespace API.Controllers
 
 
         [HttpPut]
-        [Route("{id:Guid}")]
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RequestUpdateUser requestUserDTO)
         {
-          var UserDomain  =  await userRepository.GetByIdAsync (x=> x.Id == id);
+            var UserName = User.FindFirstValue(ClaimTypes.Name);
+            var UserDomain  =  await userRepository.GetByIdAsync (x=> x.UserName == UserName);
 
            if(UserDomain == null)
             {
@@ -140,7 +155,7 @@ namespace API.Controllers
 
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("admin/{id:Guid}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
