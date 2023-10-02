@@ -60,17 +60,36 @@ namespace Infrastructure.Data
 
         public async Task<List<OrderPayment>> GetAllWithPayableAmount(Expression<Func<OrderProduct, bool>> expression)
         {
+           // await GetPayment(expression);
             var Result = await context.OrderProducts.Where(expression).GroupBy(x => x.OrderId)
                  .Select(x =>
                  new OrderPayment{
                     
                      Id = x.Key,
-                     Amount = x.Select(p => p.CurrentPrice).FirstOrDefault() * x.Sum(x => x.Quantity),
-                    
+                     Amount = x.Sum(x => (x.Quantity * x.CurrentPrice))
                  }
                  ).OrderBy(x => x.Amount).ToListAsync();
 
             return Result;
+        }
+
+        private async Task GetPayment(Expression<Func<OrderProduct, bool>> expression)
+        {
+            var Result = await context.OrderProducts.Where(expression).GroupBy(x => x.OrderId)
+                .Select(x=> new
+                {
+                   id = x.Key,
+                   p = new
+                   {
+                     qut =   x.Select(x => x.Quantity),
+                     price = x.Select(x => x.CurrentPrice),
+                     amount = x.Sum(x=> x.Quantity * x.CurrentPrice)
+
+                   }
+                }
+                ).ToListAsync();
+           Console.WriteLine(Result);
+
         }
 
         //public Task<Order> UpdateIsPaid(Expression<Func<Order, bool>> expression, bool Ispaid)

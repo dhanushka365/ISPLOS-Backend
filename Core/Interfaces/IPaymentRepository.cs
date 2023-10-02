@@ -11,7 +11,7 @@ namespace Core.Interfaces
 {
     public interface IPaymentRepository : IGenericRepository<Payment>
     {
-      Task<IEnumerable<Payment>> GetAllOrderByDate();
+      //Task<IEnumerable<Payment>> GetAllOrderByDate();
 
       Task<IEnumerable<Payment>> GetAllByUser(Expression<Func<Payment, bool>> expression);
     }

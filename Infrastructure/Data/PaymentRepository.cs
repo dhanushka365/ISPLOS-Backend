@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,22 @@ namespace Infrastructure.Data
 {
     public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     {
+        private readonly StoreContext context;
+
         public PaymentRepository(StoreContext context) : base(context)
         {
+            this.context = context;
         }
 
-        public Task<IEnumerable<Payment>> GetAllByUser(Expression<Func<Payment, bool>> expression)
+        public async Task<IEnumerable<Payment>> GetAllByUser(Expression<Func<Payment, bool>> expression)
         {
-            throw new NotImplementedException();
+           return await context.Payments.Include("User").Where(expression).ToListAsync();
         }
 
         public Task<IEnumerable<Payment>> GetAllOrderByDate()
         {
             throw new NotImplementedException();
         }
+
     }
 }
