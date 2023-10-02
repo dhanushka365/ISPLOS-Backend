@@ -10,6 +10,5 @@
 
         public string Avatar { get; set; }
 
-        public Guid RoleId { get; set; }
     }
 }

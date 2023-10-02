@@ -2,6 +2,7 @@
 using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ namespace API.Controllers
 
 
         [HttpGet]
-
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Get()
         {
             var Roles = await roleRepository.ListAllAsync();
@@ -33,6 +34,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             var Role = await roleRepository.GetByIdAsync(x => x.Id == id);
@@ -46,6 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] RequestRoleDTO requestRoleDTO)
         {
 
@@ -73,6 +76,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put([FromBody] RequestRoleDTO requestRoleDTO, [FromRoute] Guid id)
         {
 
@@ -94,6 +98,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
 

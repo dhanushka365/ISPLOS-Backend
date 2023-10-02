@@ -122,10 +122,36 @@ namespace API.Controllers
 
         }
 
+        [HttpPut]
+        [Route("Admin/{uid:Guid}/Role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PutRoleOfUser([FromBody] RequestUpdateUserRoleDto requestUpdateUserRoleDto, [FromRoute] Guid uid)
+        {
+         
+            var UserDomain = await userRepository.GetByIdAsync(x => x.Id == uid);
+
+            if (UserDomain == null)
+            {
+                return NotFound();
+            }
+
+            UserDomain.RoleId = requestUpdateUserRoleDto.roleId;
+    
+
+            var IdentityResult = await userManager.UpdateAsync(UserDomain);
+
+            if (IdentityResult.Succeeded)
+            {
+                return Ok(mapper.Map<UserDTO>(UserDomain));
+            }
+
+            return BadRequest("Something Went wrong when Updating user.");
+
+        }
 
         [HttpPut]
         [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RequestUpdateUser requestUserDTO)
+        public async Task<IActionResult> Put([FromBody] RequestUpdateUser requestUserDTO)
         {
             var UserName = User.FindFirstValue(ClaimTypes.Name);
             var UserDomain  =  await userRepository.GetByIdAsync (x=> x.UserName == UserName);
@@ -140,7 +166,6 @@ namespace API.Controllers
             UserDomain.UserName = requestUserDTO.Email;
             UserDomain.PhoneNumber = requestUserDTO.PhoneNumber;
             UserDomain.Avatar = requestUserDTO.Avatar;
-            UserDomain.RoleId = requestUserDTO.RoleId;
 
             var IdentityResult = await userManager.UpdateAsync(UserDomain);
 
