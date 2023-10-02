@@ -39,7 +39,5 @@ namespace Core.Interfaces
 
         void Delete(T entity);
 
-        Task<Image> UploadImage(Image image);
-
     }
 }
