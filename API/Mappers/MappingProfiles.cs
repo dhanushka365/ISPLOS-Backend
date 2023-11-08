@@ -36,12 +36,10 @@ namespace API.Mappers
             CreateMap<Payment,PaymentDTO>().ReverseMap();
             CreateMap<OrderPayment, OrderDto>().ReverseMap();
             CreateMap<Payment,PaymentHistoryDTO>().ReverseMap();
+            CreateMap<Rating, RatingDto>().ReverseMap();
+            CreateMap<Rating, RequestRatingDto>().ReverseMap();
 
             //CreateMap<RequestOrderDto, Order>().ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems)).ReverseMap();
-
-
-
-
         }
     }
 }

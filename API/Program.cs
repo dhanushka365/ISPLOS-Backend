@@ -40,6 +40,9 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IBalanceRepository, BalanceRepository>();
 builder.Services.AddScoped<IPaymentRepository,PaymentRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
+builder.Services.AddTransient<IEmailSenderRepository, EmailRepository>();
+//var app = builder.Build();
 //Add Generic Repository as service
 //builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
@@ -92,7 +95,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .WithOrigins("https://localhost:4200");
+              .WithOrigins("http://localhost:5173");
     });
 });
 

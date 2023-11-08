@@ -42,7 +42,7 @@ namespace API.Controllers
         //-------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
         [Route("admin/all")]
-        [Authorize(Roles ="Admin,User")]
+        //[Authorize(Roles ="Admin,User")]
         public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] string Name)
         {
 
@@ -89,7 +89,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<Product>> GetProduct([FromRoute] Guid id)
         {
 
@@ -115,7 +115,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Admin/{id:Guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateProduct(Guid id, RequestProductDto product)
         {
             var ProductDomain = await _productsRepo.GetByIdAsync(product => product.Id == id);
@@ -141,7 +141,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("Admin")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddProduct([FromBody] RequestProductDto requestproductdto)
         {
             try
@@ -170,7 +170,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("admin/{id:Guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
             try
@@ -196,7 +196,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("admin/upload/{productId}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> UploadProductImage(Guid productId, [FromForm] ImageUploadRequestDto request)
         {
             var product = await _productsRepo.GetByIdAsync(p => p.Id == productId);

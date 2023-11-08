@@ -46,7 +46,7 @@ namespace API.Controllers
         //Get Today's Orders
         [HttpGet]
         [Route("admin/all")]
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Admin")]
         public async Task<ActionResult<List<Order>>> GetALLOrders([FromQuery] bool isToday)
         {
             try
@@ -60,6 +60,7 @@ namespace API.Controllers
                 else
                 {
                     OrderProductList = await orderRepository.GetAll();
+
                 }
                 
                   var response = _mapper.Map<List<OrderProductObjectResponseDTO>>(OrderProductList);
@@ -75,7 +76,7 @@ namespace API.Controllers
         //Get One Order By ID
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> GetOrder([FromRoute] Guid id)
         {
             try
@@ -96,7 +97,7 @@ namespace API.Controllers
         //Get All UnPaid Orders of rge User
         [HttpGet]
         [Route("user")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> GetOrderofUser([FromQuery] bool isPaid, [FromQuery] bool isAll)
         {
             try
@@ -134,7 +135,7 @@ namespace API.Controllers
         //Get All UnPaid Orders of rge User
         [HttpGet]
         [Route("admin/user/{uid:Guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetOrderByUser([FromRoute] Guid uid, [FromQuery] bool isPaid, [FromQuery] bool isAll)
         {
             try
@@ -168,7 +169,7 @@ namespace API.Controllers
         //Get Today's Orders
         [HttpGet]
         [Route("admin/today/stat")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetAllTodayOrderStat()
         {
             try
@@ -187,7 +188,7 @@ namespace API.Controllers
 
         //Create Order
         [HttpPost]
-        [Authorize(Roles ="Admin,User")]
+        //[Authorize(Roles ="Admin,User")]
         public async Task<ActionResult> CreateOrder([FromBody] RequestOrderDto requestOrderDto)
         {
             using (var transaction = storeContext.Database.BeginTransaction())
@@ -256,7 +257,7 @@ namespace API.Controllers
         //Create Order To Specific User
         [HttpPost]
         [Route("admin/user/{uid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateOrderForUser([FromBody] RequestOrderDto requestOrderDto, [FromRoute] Guid uid)
         {
             using (var transaction = storeContext.Database.BeginTransaction())

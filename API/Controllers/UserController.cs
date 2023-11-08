@@ -27,7 +27,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("admin/all")]
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Admin")]
         public async Task<IActionResult> Get([FromQuery] string Name) {
 
             var userList = new List<User>();
@@ -47,7 +47,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("admin/{id:Guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserByID([FromRoute] Guid id)
         {
             var user  =  await userRepository.GetByIdAsync(x=> x.Id == id);
@@ -69,8 +69,7 @@ namespace API.Controllers
 
 
         [HttpPost]
-        [Route("admin")]
-        [Authorize(Roles = "Admin")]
+        //[Route("admin")]
         public async Task<IActionResult> Post([FromBody] RequestUserDTO requestUserDTO)
         {
             var UserDomain = new User
@@ -97,7 +96,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Password")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Put([FromBody] RequestUpdateUserPasswordDTO userPasswordDTO)
         {
             var UserName = User.FindFirstValue(ClaimTypes.Name);
@@ -124,7 +123,7 @@ namespace API.Controllers
 
         [HttpPut]
         [Route("Admin/{uid:Guid}/Role")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutRoleOfUser([FromBody] RequestUpdateUserRoleDto requestUpdateUserRoleDto, [FromRoute] Guid uid)
         {
          
@@ -150,7 +149,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Put([FromBody] RequestUpdateUser requestUserDTO)
         {
             var UserName = User.FindFirstValue(ClaimTypes.Name);
@@ -181,7 +180,7 @@ namespace API.Controllers
 
         [HttpDelete]
         [Route("admin/{id:Guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var UserDomain = await userRepository.GetByIdAsync(x => x.Id == id);

@@ -8,6 +8,8 @@
 
   <ItemGroup>
 
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
 
     <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="7.0.11" />
